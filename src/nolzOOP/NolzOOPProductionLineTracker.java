@@ -45,13 +45,7 @@ public class NolzOOPProductionLineTracker extends Application {
     initializeDB();
 
     //display the JOB Data
-    btShowJobs.setOnAction(e -> {
-      try {
-        showData();
-      } catch (SQLException e1) {
-        e1.printStackTrace();
-      }
-    });
+    btShowJobs.setOnAction(e -> showData());
 
     HBox hBox = new HBox(10);
     hBox.getChildren().addAll(new Label("Table Name"), cboTableName, btShowJobs);
@@ -89,8 +83,6 @@ public class NolzOOPProductionLineTracker extends Application {
 
     Connection conn = null;
 
-    Statement stmt = null;
-
     //Exact same for every database
     //Result set looks like the database table
     try {
@@ -112,39 +104,30 @@ public class NolzOOPProductionLineTracker extends Application {
 //      ResultSet rs = stmt.executeQuery(sql);
 
       DatabaseMetaData dbmd = conn.getMetaData();
-      ResultSet rsTables = dbmd.getTables(null, null, "JOB", new String[]{"TABLE"});
+      ResultSet rsTables = dbmd.getTables(null, null, "JOB%", new String[]{"TABLE"});
 
       while (rsTables.next()) {
         cboTableName.getItems().add(rsTables.getString("TABLE_NAME"));
       }
 
-      // STEP 4: Clean-up environment
-
-      stmt.close();
-
-      conn.close();
-
-      rsTables.close();
+      // STEP 4: Clean-up environmen
 
     } catch (ClassNotFoundException e) {
 
       e.printStackTrace();
 
-
     } catch (SQLException e) {
-
       e.printStackTrace();
-
     }
   }
 
-  private void showData() throws SQLException {
+  private void showData() {
     ta.clear();
     String tableName = cboTableName.getValue();
     try {
       //Create query that will select from the chosen table name
 
-      String sql = "SELECT * FROM" + tableName;
+      String sql = "SELECT * FROM " + tableName;
 
       ResultSet rs = stmt.executeQuery(sql);
 
@@ -153,26 +136,21 @@ public class NolzOOPProductionLineTracker extends Application {
       int numberOfColumns = rsmd.getColumnCount();
 
       // ta.appendText(rs.getString(1));
-
+      for (int i = 1; i <= numberOfColumns; i++) {
+        ta.appendText(rsmd.getColumnName(i) + "\t");
+      }
+      ta.appendText("\n");
 
       while (rs.next()) {
+
         for (int i = 1; i <= numberOfColumns; i++) {
-          ta.appendText(rsmd.getColumnName(i) + "\t");
+          ta.appendText(rs.getString(i) + "\t");
         }
         ta.appendText("\n");
-
-//        for (int i = 1; i <= numberOfColumns; i++) {
-//          ta.appendText(rs.getString(i) + "\t");
-//        }
-//        ta.appendText("\n");
 
       }
 
       // STEP 4: Clean-up environment
-
-      stmt.close();
-
-      rs.close();
 
     } catch (SQLException e) {
 
