@@ -8,7 +8,9 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -30,7 +32,6 @@ public class NolzOOPProductionLineTracker extends Application {
   private Button btShowJobs = new Button("Show Records");
   private ComboBox<String> cboTableName = new ComboBox<>();
 
-
   private Statement stmt;
 
   /**
@@ -46,19 +47,16 @@ public class NolzOOPProductionLineTracker extends Application {
 
     //display the JOB Data
     btShowJobs.setOnAction(e -> showData());
+    Parent root = FXMLLoader.load(getClass().getResource("menu.fxml"));
 
-    HBox hBox = new HBox(10);
-    hBox.getChildren().addAll(new Label("Table Name"), cboTableName, btShowJobs);
-    hBox.setAlignment(Pos.CENTER);
-    BorderPane bpane = new BorderPane();
-    bpane.setCenter(new ScrollPane(ta));
-    bpane.setTop(hBox);
-    Scene scene = new Scene(bpane, 420, 180);
+    Scene scene = new Scene(root, 600, 420);
     primaryStage.setTitle("Display JOB Information");
     primaryStage.setScene(scene);
+    scene.getStylesheets()
+        .add(NolzOOPProductionLineTracker.class.getResource("styleCSS.css").toExternalForm());
+
     primaryStage.show();
 
-//    Parent root = FXMLLoader.load(getClass().getResource("nolzOOP.fxml"));
 //    primaryStage.setTitle("Hello World");
 //    primaryStage.setScene(new Scene(root, 300, 275));
 //    primaryStage.show();
@@ -110,8 +108,6 @@ public class NolzOOPProductionLineTracker extends Application {
         cboTableName.getItems().add(rsTables.getString("TABLE_NAME"));
       }
 
-      // STEP 4: Clean-up environmen
-
     } catch (ClassNotFoundException e) {
 
       e.printStackTrace();
@@ -135,19 +131,19 @@ public class NolzOOPProductionLineTracker extends Application {
 
       int numberOfColumns = rsmd.getColumnCount();
 
-      // ta.appendText(rs.getString(1));
+      // Prints column names in text area
       for (int i = 1; i <= numberOfColumns; i++) {
-        ta.appendText(rsmd.getColumnName(i) + "\t");
+        ta.appendText(rsmd.getColumnName(i) + " ");
       }
       ta.appendText("\n");
 
       while (rs.next()) {
 
+        // Prints data for each column
         for (int i = 1; i <= numberOfColumns; i++) {
-          ta.appendText(rs.getString(i) + "\t");
+          ta.appendText(rs.getString(i) + " ");
         }
         ta.appendText("\n");
-
       }
 
       // STEP 4: Clean-up environment
@@ -159,7 +155,6 @@ public class NolzOOPProductionLineTracker extends Application {
     } catch (Exception e) {
 
       e.printStackTrace();
-
 
     }
     //Create a ResultSet object to hold the data from the executed query
