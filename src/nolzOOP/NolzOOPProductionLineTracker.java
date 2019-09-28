@@ -39,15 +39,13 @@ public class NolzOOPProductionLineTracker extends Application {
   @Override
   public void start(Stage primaryStage) throws Exception {
 
-    Controller.initializeDB();
 
     //display the JOB Data
     //btShowJobs.setOnAction(e -> showData());
 
-
     Parent root = FXMLLoader.load(getClass().getResource("menu.fxml"));
 
-    Scene scene = new Scene(root, 600, 420);
+    Scene scene = new Scene(root, 600, 400);
     primaryStage.setTitle("Display JOB Information");
     primaryStage.setScene(scene);
     scene.getStylesheets()

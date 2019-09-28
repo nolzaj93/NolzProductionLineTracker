@@ -1,23 +1,28 @@
 package nolzOOP;
 
+import java.net.URL;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 
-public class Controller {
+public class Controller implements Initializable {
 
-  @FXML
-  private ComboBox quantity;
+  private NolzOOPProductionLineTracker app;
+  private static Connection conn;
 
   @FXML
   private ComboBox itemTypeCombo;
@@ -28,30 +33,88 @@ public class Controller {
   @FXML
   private TextField manufacturerField;
 
+  @FXML
+  private static TableView<Product> existingProductsTable = new TableView<>();
+
+  @FXML
+  private ComboBox quantity;
+
+  @FXML
   private static Statement stmt;
-  static final String JDBC_DRIVER = "org.h2.Driver";
 
-  static final String DB_URL = "jdbc:h2:./res/HR;DB_CLOSE_DELAY=-1";
+  @FXML
+  private TableColumn<Product, String> productNameColumn;
+
+  @FXML
+  private TableColumn<Product, String> manufacturerColumn;
+
+  @FXML
+  private TableColumn<Product, String> itemTypeColumn;
+
+  private static final String JDBC_DRIVER = "org.h2.Driver";
+  private static final String DB_URL = "jdbc:h2:./res/HR;DB_CLOSE_DELAY=-1";
+
   //  Database credentials
+  private static final String USER = "";
+  private static final String PASS = "";
 
-  static final String USER = "nolzaj93";
-  static final String PASS = "a050593n";
+  private ObservableList<Product> existingProducts = FXCollections.observableArrayList();
 
-  private TextArea ta = new TextArea();
-  private Button btShowJobs = new Button("Show Records");
+  public void initialize(URL url, ResourceBundle resourceBundle) {
 
-  public void initialize() {
+    System.out.println("test");
+    initializeDB();
+//
+//    productNameColumn.setCellValueFactory(new PropertyValueFactory<Product, String>("productName"));
+//
+//    manufacturerColumn.setCellValueFactory(new PropertyValueFactory<Product, String>("manufacturer"));
+//
+//    itemTypeColumn.setCellValueFactory(new PropertyValueFactory<Product, String>("itemType"));
+
+    //existingProducts = FXCollections.observableArrayList();
+   // existingProductsTable = new TableView<>();
+//  existingProductsTable.setPlaceholder(new Label("No rows to display"));
+
+    // Populates the comboBox named quantity with numbers 1-10
+    for (int count = 1; count <= 10; count++) {
+      quantity.getItems().add(count);
+    }
+
+    try {
+      //Populate existingProducts
+      String sql = "SELECT NAME,TYPE,MANUFACTURER FROM PRODUCT";
+      stmt = conn.createStatement();
+      ResultSet rs = stmt.executeQuery(sql);
+
+      /* Data added to ObservableList *
+       ********************************/
+      while (rs.next()) {
+        //Iterate Row
+        ObservableList<String> row = FXCollections.observableArrayList();
+
+        for (int i = 1; i <= 3; i++) {
+          //Iterate Column
+          row.add(rs.getString(i));
+        }
+        System.out.println("Row [1] added " + row);
+
+        existingProducts.add(new Product(row.get(0),row.get(1),row.get(2)));
+
+      }
+    }  catch (SQLException e) {
+      e.printStackTrace();
+    }
+//    existingProductsTable.setItems(existingProducts);
+//    existingProductsTable.getColumns().addAll(productNameColumn,manufacturerColumn,itemTypeColumn);
+//    existingProductsTable.getItems().addAll(existingProducts);
+   // existingProductsTable.refresh();
+    existingProductsTable.setItems(getProductData());
 
     // Populate Item Type ComboBox
     itemTypeCombo.getItems().add("AUDIO");
     itemTypeCombo.getItems().add("VIDEO");
     itemTypeCombo.getItems().add("AUDIOMOBILE");
     itemTypeCombo.getItems().add("VIDEOMOBILE");
-
-    // Populates the comboBox named quantity with numbers 1-10
-    for (int count = 1; count <= 10; count++) {
-      quantity.getItems().add(count);
-    }
 
     //Allows the user to add an entry
     quantity.setEditable(true);
@@ -67,7 +130,7 @@ public class Controller {
     // Right click on database, Diagrams, Open Visualization
     // Need a database diagram for the Production Line Project
 
-    Connection conn = null;
+    conn = null;
 
     //Exact same for every database
     //Result set looks like the database table
@@ -97,47 +160,8 @@ public class Controller {
 //       // cboTableName.getItems().add(rsTables.getString("TABLE_NAME"));
 //      }
 
-    } catch (ClassNotFoundException e) {
 
-      e.printStackTrace();
 
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-  }
-
-  @FXML
-  protected void addNewProduct(ActionEvent event) {
-    String itemType = (String) itemTypeCombo.getValue();
-    // Show 1 as the default value.
-    itemTypeCombo.getSelectionModel().selectFirst();
-
-    String productName = productNameField.getText();
-    productNameField.clear();
-    String manufacturer = manufacturerField.getText();
-    manufacturerField.clear();
-
-    try {
-      //STEP 2: Register JDBC driver
-      Class.forName("com.mysql.jdbc.Driver");
-
-      Connection conn = null;
-
-      //STEP 3: Open a connection
-      System.out.println("Connecting to a selected database...");
-      conn = DriverManager.getConnection(DB_URL, USER, PASS);
-      System.out.println("Connected database successfully...");
-
-      //STEP 4: Execute a query
-      System.out.println("Inserting records into the table...");
-
-      //INSERT INTO Product(type, manufacturer, name) VALUES ( 'AUDIO', 'Apple', 'iPod' );
-      //Create update statement that will select from the chosen table name
-      conn = DriverManager.getConnection(DB_URL, USER, PASS);
-      stmt = conn.createStatement();
-      String sql = "INSERT INTO PRODUCT VALUES (" + productName
-          + ", " + itemType + ", " + manufacturer + ")";
-      stmt.executeUpdate(sql);
 //
 //      ResultSetMetaData rsmd = rs.getMetaData();
 //
@@ -160,6 +184,19 @@ public class Controller {
 
       // STEP 4: Clean-up environment
 
+    } catch (ClassNotFoundException e) {
+
+      e.printStackTrace();
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    try {
+//      //STEP 2: Register JDBC driver
+//      Class.forName("com.mysql.jdbc.Driver");
+      stmt = conn.createStatement();
+
     } catch (SQLException e) {
 
       e.printStackTrace();
@@ -169,12 +206,72 @@ public class Controller {
       e.printStackTrace();
 
     }
-    //Create a ResultSet object to hold the data from the executed query
-
-    //Use the MetaData from the ResultSet to append the column names to the text area
-
-    //Use a while loop to display the values of the returned data to the test area
   }
+
+  @FXML
+  protected void addNewProduct(ActionEvent event) {
+    if (existingProductsTable.getItems() != null) {
+      existingProducts = existingProductsTable.getItems();
+    } else if (productNameField.getText() == null || manufacturerField.getText() == null
+        || itemTypeCombo.getValue() == null) {
+
+      //Will eventually print Error Message, currently does nothing
+    } else {
+
+      String itemType = (String) itemTypeCombo.getValue();
+      // Show 1 as the default value.
+      itemTypeCombo.getSelectionModel().selectFirst();
+
+      String productName = productNameField.getText();
+      productNameField.clear();
+      String manufacturer = manufacturerField.getText();
+      manufacturerField.clear();
+
+      try {
+//      //STEP 2: Register JDBC driver
+//      Class.forName("com.mysql.jdbc.Driver");
+        stmt = conn.createStatement();
+        String sql = "INSERT INTO PRODUCT(NAME, TYPE, MANUFACTURER) VALUES ('" + productName
+            + "', '" + itemType + "', '" + manufacturer + "')";
+        stmt.executeUpdate(sql);
+
+        existingProducts = FXCollections.observableArrayList();
+
+        sql = "SELECT NAME,TYPE,MANUFACTURER FROM PRODUCT";
+        stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(sql);
+
+
+        /* Data added to ObservableList *
+         ********************************/
+        while (rs.next()) {
+          //Iterate Row
+          ObservableList<String> row = FXCollections.observableArrayList();
+          for (int i = 1; i <= 3; i++) {
+            //Iterate Column
+            row.add(rs.getString(i));
+          }
+          System.out.println("Row [1] added " + row);
+          //existingProducts.add(row);
+
+        }
+
+        //FINALLY ADDED TO TableView
+        existingProductsTable.setItems(existingProducts);
+
+
+      } catch (SQLException e) {
+
+        e.printStackTrace();
+
+      } catch (Exception e) {
+
+        e.printStackTrace();
+
+      }
+    }
+
+
 //  private void showData() {
 //    String itemType = itemTypeCombo.getValue();
 //    itemTypeCombo.clear();
@@ -226,4 +323,11 @@ public class Controller {
 //
 //    //Use a while loop to display the values of the returned data to the test area
 //  }
+
+  }
+
+  public  ObservableList<Product> getProductData(){
+    return existingProducts;
+  }
+
 }
