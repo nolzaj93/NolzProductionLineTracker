@@ -67,7 +67,7 @@ public class Controller {
     for (int count = 1; count <= 10; count++) {
       quantity.getItems().add(Integer.toString(count));
     }
-    String sql = "SELECT NAME,TYPE,MANUFACTURER FROM PRODUCT";
+    String sql = "SELECT NAME,MANUFACTURER,TYPE FROM PRODUCT";
 
     try {
 
@@ -143,7 +143,7 @@ public class Controller {
         && itemTypeCombo.getValue() != null) {
 
       String addProductString = "INSERT INTO PRODUCT(NAME, MANUFACTURER, TYPE) VALUES (?,?,?)";
-      String showProductsString = "SELECT NAME,TYPE,MANUFACTURER FROM PRODUCT";
+      String showProductsString = "SELECT NAME,MANUFACTURER,TYPE FROM PRODUCT";
 
       PreparedStatement addProduct = null;
       PreparedStatement showProducts = null;
@@ -156,7 +156,6 @@ public class Controller {
       // Show 1 as the default value.
       itemTypeCombo.getSelectionModel().selectFirst();
 
-      boolean fail = true;
       try {
 
         addProduct = conn.prepareStatement(addProductString);
@@ -164,7 +163,6 @@ public class Controller {
         addProduct.setString(1, enteredProductName);
         addProduct.setString(2, enteredManufacturer);
         addProduct.setString(3, enteredItemType);
-        fail = false;
 
         //STEP 2: Register JDBC driver
         //Class.forName("com.mysql.jdbc.Driver");
@@ -175,6 +173,7 @@ public class Controller {
 
         //FINALLY ADDED TO TableView
         existingProductsTable.setItems(existingProducts);
+
         rs.close();
         addProduct.close();
         showProducts.close();
@@ -190,6 +189,7 @@ public class Controller {
   protected void populateExistingProducts(ResultSet rs) {
 
     try {
+      existingProducts.clear();
       while (rs.next()) {
         //Iterate Row
         ObservableList<String> row = FXCollections.observableArrayList();
