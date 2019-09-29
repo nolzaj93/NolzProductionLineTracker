@@ -1,31 +1,30 @@
 /**
+ * The Controller class listens for user events and updates the view using the Product class. This
+ * Controller contains methods to initialize the database, initialize comboBox members, add new
+ * products to a database, and display that data to a TableView. Date: 9/28/19
+ *
  * @author Austin Nolz
- * @brief The Controller class listens for user events and updates the view using data from models,
- * like Product.
- * Date: 9/28/19
  */
+
 package com.nolz3003;
 
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-
-public class Controller implements Initializable {
+public class Controller {
 
   private static Connection conn;
 
@@ -45,7 +44,7 @@ public class Controller implements Initializable {
   private ComboBox<String> quantity;
 
   @FXML
-  private static Statement stmt;
+  private Statement stmt;
 
   @FXML
   private TableColumn<Product, String> productNameColumn;
@@ -65,7 +64,10 @@ public class Controller implements Initializable {
 
   private final ObservableList<Product> existingProducts = FXCollections.observableArrayList();
 
-  public void initialize(URL url, ResourceBundle resourceBundle) {
+  /**
+   * This method is called by default because this Controller class implements Initializable.
+   */
+  public void initialize() {
 
     initializeDB();
 
@@ -108,6 +110,8 @@ public class Controller implements Initializable {
 
         existingProducts.add(new Product(productName, manufacturer, itemType));
       }
+      rs.close();
+
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -117,7 +121,7 @@ public class Controller implements Initializable {
     //existingProductsTable.getColumns().addAll(productNameColumn,manufacturerColumn,itemTypeColumn)
     //existingProductsTable.getItems().addAll(existingProducts);
     //existingProductsTable.refresh();
-    existingProductsTable.setItems(getProductData());
+    existingProductsTable.setItems(existingProducts);
 
     try {
       // Populate Item Type ComboBox
@@ -136,10 +140,12 @@ public class Controller implements Initializable {
     quantity.getSelectionModel().selectFirst();
   }
 
-  private static void initializeDB() {
+  /**
+   * This method makes an attempt to connect to the H2 local database.
+   */
+  private void initializeDB() {
     // intelliJ must be disconnected from the database in order for program to connect
     // Hit the red square to stop intelliJ connection to database before running the program
-
     // Right click on database, Diagrams, Open Visualization
     // Need a database diagram for the Production Line Project
 
@@ -164,49 +170,54 @@ public class Controller implements Initializable {
     } catch (ClassNotFoundException | SQLException e) {
 
       e.printStackTrace();
-
     }
   }
 
+  /**
+   * This method adds new products to the database and updates the TableView .
+   *
+   * @param event When the user clicks the Add Product button this method is passed an event
+   */
   @FXML
-  protected void addNewProduct(ActionEvent event) {
+  protected void addNewProduct(ActionEvent event) throws SQLException {
 
     if (!productNameField.getText().isEmpty() && !manufacturerField.getText().isEmpty()
         && itemTypeCombo.getValue() != null) {
 
-      String itemType = itemTypeCombo.getValue();
-      // Show 1 as the default value.
-      itemTypeCombo.getSelectionModel().selectFirst();
+      String addProductString = "INSERT INTO PRODUCT(NAME, MANUFACTURER, TYPE) VALUES (?,?,?)";
+      String showProductsString = "SELECT NAME,TYPE,MANUFACTURER FROM PRODUCT";
+
+      final PreparedStatement addProduct = conn.prepareStatement(addProductString);
+      final PreparedStatement showProducts = conn.prepareStatement(showProductsString);
 
       String productName = productNameField.getText();
       productNameField.clear();
-
       String manufacturer = manufacturerField.getText();
       manufacturerField.clear();
+      addProduct.setString(1, productName);
+      addProduct.setString(2, manufacturer);
+      String itemType = itemTypeCombo.getValue();
+      // Show 1 as the default value.
+      itemTypeCombo.getSelectionModel().selectFirst();
+      addProduct.setString(3, itemType);
 
       try {
         //STEP 2: Register JDBC driver
         //Class.forName("com.mysql.jdbc.Driver");
-        stmt = conn.createStatement();
-        String sql = "INSERT INTO PRODUCT(NAME, TYPE, MANUFACTURER) VALUES ('" + productName
-            + "', '" + itemType + "', '" + manufacturer + "')";
-        stmt.executeUpdate(sql);
+        addProduct.executeUpdate();
+        ResultSet rs = showProducts.executeQuery();
 
-        sql = "SELECT NAME,TYPE,MANUFACTURER FROM PRODUCT";
-        stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sql);
-
-
-        /* Data added to ObservableList *
-         ********************************/
         while (rs.next()) {
           //Iterate Row
           ObservableList<String> row = FXCollections.observableArrayList();
           for (int i = 1; i <= 3; i++) {
             //Iterate Column
             row.add(rs.getString(i));
+
           }
-          //existingProducts.add(row);
+          existingProducts.add(new Product(productName, manufacturer, itemType));
+          System.out.println("Row added " + row);
+
         }
 
         //FINALLY ADDED TO TableView
@@ -215,13 +226,10 @@ public class Controller implements Initializable {
       } catch (Exception e) {
 
         e.printStackTrace();
-
+      } finally {
+        addProduct.close();
+        showProducts.close();
       }
     }
   }
-
-  private ObservableList<Product> getProductData() {
-    return existingProducts;
-  }
-
 }

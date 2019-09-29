@@ -1,7 +1,7 @@
 /**
- * @author Austin Nolz
- * @brief The Product class holds the data for each product added to the Existing Product table.
+ * The Product class holds the data for each product added to the Existing Product table.
  * Date: 9/28/19
+ * @author Austin Nolz
  */
 
 package com.nolz3003;

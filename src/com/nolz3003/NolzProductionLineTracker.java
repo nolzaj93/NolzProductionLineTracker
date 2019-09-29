@@ -1,8 +1,9 @@
 /**
+ * The driver class of the application containing main and the start method. Date: 9/28/19
+ *
  * @author Austin Nolz
- * @brief The driver class of the application containing main and the start method.
- * Date: 9/28/19
  */
+
 package com.nolz3003;
 
 import javafx.application.Application;
@@ -11,12 +12,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-/**
- * This class is the driver class of the application, which holds the start method where the first
- * view is loaded.
- *
- * @author austinnolz
- */
 public class NolzProductionLineTracker extends Application {
 
   /**
@@ -40,9 +35,7 @@ public class NolzProductionLineTracker extends Application {
     //primaryStage.setTitle("Hello World");
     //primaryStage.setScene(new Scene(root, 300, 275));
     //primaryStage.show();
-
   }
-
 
   public static void main(String[] args) {
 
