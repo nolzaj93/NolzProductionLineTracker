@@ -48,20 +48,20 @@
           <Label prefHeight="22.0" prefWidth="84.0" text="Item Type" GridPane.rowIndex="2" />
           <ComboBox fx:id="itemTypeCombo" prefHeight="27.0" prefWidth="191.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
         </GridPane>
-        <Label layoutX="7.0" layoutY="124.0" text="Existing Products" />
-        <TableView fx:id="existingProductsTable" layoutX="142.0" layoutY="124.0" prefHeight="233.0" prefWidth="443.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="15.0">
+        <Label layoutX="14.0" layoutY="107.0" text="Existing Products" />
+        <TableView fx:id="existingProductsTable" layoutX="15.0" layoutY="124.0" prefHeight="233.0" prefWidth="570.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="15.0">
           <columns>
-            <TableColumn fx:id="productNameColumn" prefWidth="133.0" text="Product Name">
+            <TableColumn fx:id="productNameColumn" prefWidth="173.0" text="Product Name">
               <cellValueFactory>
                 <PropertyValueFactory property="productName" />
               </cellValueFactory>
             </TableColumn>
-            <TableColumn fx:id="manufacturerColumn" prefWidth="163.0" text="Manufacturer">
+            <TableColumn fx:id="manufacturerColumn" prefWidth="206.0" text="Manufacturer">
               <cellValueFactory>
                 <PropertyValueFactory property="manufacturer" />
               </cellValueFactory>
             </TableColumn>
-            <TableColumn fx:id="itemTypeColumn" prefWidth="145.0" text="Item Type">
+            <TableColumn fx:id="itemTypeColumn" prefWidth="171.0" text="Item Type">
               <cellValueFactory>
                 <PropertyValueFactory property="itemType" />
               </cellValueFactory>

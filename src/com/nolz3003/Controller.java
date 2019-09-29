@@ -78,6 +78,7 @@ public class Controller {
     } catch (SQLException e) {
       e.printStackTrace();
     }
+
     existingProductsTable.setEditable(true);
     existingProductsTable.setItems(existingProducts);
 
@@ -189,19 +190,23 @@ public class Controller {
   protected void populateExistingProducts(ResultSet rs) {
 
     try {
-      existingProducts.clear();
-      while (rs.next()) {
-        //Iterate Row
-        ObservableList<String> row = FXCollections.observableArrayList();
-        for (int i = 1; i <= 3; i++) {
-          row.add(rs.getString(i));
-        }
+      if (existingProducts.isEmpty()) {
+        existingProducts.add(new Product("", "", ""));
+      } else {
+        existingProducts.clear();
+        while (rs.next()) {
+          //Iterate Row
+          ObservableList<String> row = FXCollections.observableArrayList();
+          for (int i = 1; i <= 3; i++) {
+            row.add(rs.getString(i));
+          }
 
-        String productName = row.get(0);
-        String manufacturer = row.get(1);
-        String itemType = row.get(2);
-        existingProducts.add(new Product(productName, manufacturer, itemType));
-        System.out.println("Row added " + row);
+          String productName = row.get(0);
+          String manufacturer = row.get(1);
+          String itemType = row.get(2);
+          existingProducts.add(new Product(productName, manufacturer, itemType));
+          System.out.println("Row added " + row);
+        }
 
       }
     } catch (SQLException ex) {
