@@ -9,7 +9,7 @@ package com.nolz3003;
 import javafx.beans.property.SimpleStringProperty;
 
 @SuppressWarnings("unused")
-class Product {
+public class Product {
 
   private final SimpleStringProperty productName = new SimpleStringProperty("");
   private final SimpleStringProperty manufacturer = new SimpleStringProperty("");

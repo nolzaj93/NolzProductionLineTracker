@@ -20,7 +20,7 @@
 
 .tab-pane {
   -fx-tab-min-width: 90px;
-  -fx-background-color: Black;
+  -fx-background-color:  linear-gradient(Black, #29292D);
 }
 
 .tab {
@@ -62,9 +62,9 @@
 .table-view .cell {
   -fx-cell-size: 35;
   -fx-alignment: center-left;
-  -fx-background-color: #29292D;
+  -fx-background-color: Black;
   -fx-border-color: #29292D;
-  -fx-text-fill: black;
+  -fx-text-fill: white;
   -fx-alignment: CENTER_LEFT;
 
 }

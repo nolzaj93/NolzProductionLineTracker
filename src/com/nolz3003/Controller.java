@@ -19,10 +19,8 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 public class Controller {
 
@@ -38,7 +36,7 @@ public class Controller {
   private TextField manufacturerField;
 
   @FXML
-  private static TableView<Product> existingProductsTable = new TableView<>();
+  private TableView<Product> existingProductsTable = new TableView<>();
 
   @FXML
   private ComboBox<String> quantity;
@@ -46,14 +44,7 @@ public class Controller {
   @FXML
   private Statement stmt;
 
-  @FXML
-  private TableColumn<Product, String> productNameColumn;
-
-  @FXML
-  private TableColumn<Product, String> manufacturerColumn;
-
-  @FXML
-  private TableColumn<Product, String> itemTypeColumn;
+  private ObservableList<Product> existingProducts;
 
   private static final String JDBC_DRIVER = "org.h2.Driver";
   private static final String DB_URL = "jdbc:h2:./res/HR;DB_CLOSE_DELAY=-1";
@@ -62,8 +53,6 @@ public class Controller {
   private static final String USER = "";
   private static final String PASS = "";
 
-  private final ObservableList<Product> existingProducts = FXCollections.observableArrayList();
-
   /**
    * This method is called by default because this Controller class implements Initializable.
    */
@@ -71,56 +60,25 @@ public class Controller {
 
     initializeDB();
 
-    productNameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
-
-    manufacturerColumn.setCellValueFactory(new PropertyValueFactory<>("manufacturer"));
-
-    itemTypeColumn.setCellValueFactory(new PropertyValueFactory<>("itemType"));
-
-    //existingProductsTable.getColumns().addAll(productNameColumn, manufacturerColumn,
-    // itemTypeColumn);
-
-    //existingProducts = FXCollections.observableArrayList();
+    existingProducts = FXCollections.observableArrayList();
     // existingProductsTable = new TableView<>();
 
     // Populates the comboBox named quantity with numbers 1-10
     for (int count = 1; count <= 10; count++) {
       quantity.getItems().add(Integer.toString(count));
     }
+    String sql = "SELECT NAME,TYPE,MANUFACTURER FROM PRODUCT";
 
     try {
-      String sql = "SELECT NAME,TYPE,MANUFACTURER FROM PRODUCT";
+
       stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery(sql);
-
-      /* Data added to ObservableList *
-       ********************************/
-      while (rs.next()) {
-        //Iterate Row
-        ObservableList<String> row = FXCollections.observableArrayList();
-
-        for (int i = 1; i <= 3; i++) {
-          //Iterate Column
-          row.add(rs.getString(i));
-        }
-        System.out.println("Row added " + row);
-        String productName = row.get(0);
-        String manufacturer = row.get(1);
-        String itemType = row.get(2);
-
-        existingProducts.add(new Product(productName, manufacturer, itemType));
-      }
+      populateExistingProducts(rs);
       rs.close();
-
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    // Must figure out why existingProductsTable will not show the Products in existingProducts
-    // These are member methods of TableView
-    //existingProductsTable.setItems(existingProducts);
-    //existingProductsTable.getColumns().addAll(productNameColumn,manufacturerColumn,itemTypeColumn)
-    //existingProductsTable.getItems().addAll(existingProducts);
-    //existingProductsTable.refresh();
+    existingProductsTable.setEditable(true);
     existingProductsTable.setItems(existingProducts);
 
     try {
@@ -187,49 +145,69 @@ public class Controller {
       String addProductString = "INSERT INTO PRODUCT(NAME, MANUFACTURER, TYPE) VALUES (?,?,?)";
       String showProductsString = "SELECT NAME,TYPE,MANUFACTURER FROM PRODUCT";
 
-      final PreparedStatement addProduct = conn.prepareStatement(addProductString);
-      final PreparedStatement showProducts = conn.prepareStatement(showProductsString);
+      PreparedStatement addProduct = null;
+      PreparedStatement showProducts = null;
 
-      String productName = productNameField.getText();
+      String enteredProductName = productNameField.getText();
       productNameField.clear();
-      String manufacturer = manufacturerField.getText();
+      String enteredManufacturer = manufacturerField.getText();
       manufacturerField.clear();
-      addProduct.setString(1, productName);
-      addProduct.setString(2, manufacturer);
-      String itemType = itemTypeCombo.getValue();
+      String enteredItemType = itemTypeCombo.getValue();
       // Show 1 as the default value.
       itemTypeCombo.getSelectionModel().selectFirst();
-      addProduct.setString(3, itemType);
 
+      boolean fail = true;
       try {
+
+        addProduct = conn.prepareStatement(addProductString);
+        showProducts = conn.prepareStatement(showProductsString);
+        addProduct.setString(1, enteredProductName);
+        addProduct.setString(2, enteredManufacturer);
+        addProduct.setString(3, enteredItemType);
+        fail = false;
+
         //STEP 2: Register JDBC driver
         //Class.forName("com.mysql.jdbc.Driver");
         addProduct.executeUpdate();
         ResultSet rs = showProducts.executeQuery();
 
-        while (rs.next()) {
-          //Iterate Row
-          ObservableList<String> row = FXCollections.observableArrayList();
-          for (int i = 1; i <= 3; i++) {
-            //Iterate Column
-            row.add(rs.getString(i));
-
-          }
-          existingProducts.add(new Product(productName, manufacturer, itemType));
-          System.out.println("Row added " + row);
-
-        }
+        populateExistingProducts(rs);
 
         //FINALLY ADDED TO TableView
         existingProductsTable.setItems(existingProducts);
-
-      } catch (Exception e) {
-
-        e.printStackTrace();
-      } finally {
+        rs.close();
         addProduct.close();
         showProducts.close();
+
+      } catch (SQLException ex) {
+
+        ex.printStackTrace();
       }
+
+    }
+  }
+
+  protected void populateExistingProducts(ResultSet rs) {
+
+    try {
+      while (rs.next()) {
+        //Iterate Row
+        ObservableList<String> row = FXCollections.observableArrayList();
+        for (int i = 1; i <= 3; i++) {
+          row.add(rs.getString(i));
+        }
+
+        String productName = row.get(0);
+        String manufacturer = row.get(1);
+        String itemType = row.get(2);
+        existingProducts.add(new Product(productName, manufacturer, itemType));
+        System.out.println("Row added " + row);
+
+      }
+    } catch (SQLException ex) {
+      ex.printStackTrace();
+    } catch (Exception ex) {
+      ex.printStackTrace();
     }
   }
 }
