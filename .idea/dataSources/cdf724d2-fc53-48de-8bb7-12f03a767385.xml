@@ -20,7 +20,7 @@
       <DataType>INTEGER(10)|4s</DataType>
       <NotNull>1</NotNull>
       <SequenceIdentity>1</SequenceIdentity>
-      <DefaultExpression>(NEXT VALUE FOR PUBLIC.SYSTEM_SEQUENCE_EA004D86_8317_487A_8A71_8D1C9679800E)</DefaultExpression>
+      <DefaultExpression>(NEXT VALUE FOR PUBLIC.SYSTEM_SEQUENCE_09405A80_AB57_4E72_8887_BEB01D23AB1C)</DefaultExpression>
     </column>
     <column id="8" parent="5" name="NAME">
       <Position>2</Position>

@@ -1,20 +1,25 @@
-package nolzOOP;
+/**
+ * @author Austin Nolz
+ * @brief The Product class holds the data for each product added to the Existing Product table.
+ * Date: 9/28/19
+ */
+
+package com.nolz3003;
 
 import javafx.beans.property.SimpleStringProperty;
 
-/**
- * The Product class holds the data for each product added to the Existing Product table.
- *
- */
-public class Product {
+@SuppressWarnings("unused")
+class Product {
 
   private final SimpleStringProperty productName = new SimpleStringProperty("");
   private final SimpleStringProperty manufacturer = new SimpleStringProperty("");
   private final SimpleStringProperty itemType = new SimpleStringProperty("");
 
-  public Product() {this("","","");}
+  public Product() {
+    this("", "", "");
+  }
 
-  public Product(String productName, String manufacturer, String itemType){
+  public Product(String productName, String manufacturer, String itemType) {
     //set Product Name, Manufacturer, and itemType
     setProductName(productName);
     setManufacturer(manufacturer);
@@ -29,7 +34,7 @@ public class Product {
     return productName;
   }
 
-  public void setProductName(String productName) {
+  private void setProductName(String productName) {
     this.productName.set(productName);
   }
 
@@ -41,7 +46,7 @@ public class Product {
     return manufacturer;
   }
 
-  public void setManufacturer(String manufacturer) {
+  private void setManufacturer(String manufacturer) {
     this.manufacturer.set(manufacturer);
   }
 
@@ -53,7 +58,8 @@ public class Product {
     return itemType;
   }
 
-  public void setItemType(String itemType) {
+  private void setItemType(String itemType) {
     this.itemType.set(itemType);
   }
+
 }
