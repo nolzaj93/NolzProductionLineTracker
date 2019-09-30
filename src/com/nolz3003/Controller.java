@@ -18,6 +18,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -27,7 +28,7 @@ public class Controller {
   private static Connection conn;
 
   @FXML
-  private ComboBox<String> itemTypeCombo;
+  private ChoiceBox<String> itemTypeCombo;
 
   @FXML
   private TextField productNameField;
@@ -82,8 +83,6 @@ public class Controller {
       e.printStackTrace();
     }
 
-
-
     try {
       // Populate Item Type ComboBox
       itemTypeCombo.getItems().add("AUDIO");
@@ -100,6 +99,7 @@ public class Controller {
     // Show 1 as the default value.
     quantity.getSelectionModel().selectFirst();
   }
+
 
   /**
    * This method makes an attempt to connect to the H2 local database.
