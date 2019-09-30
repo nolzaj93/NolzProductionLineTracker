@@ -174,8 +174,8 @@ public class Controller {
 
         populateExistingProducts(rs);
 
-        //FINALLY ADDED TO TableView
-        existingProductsTable.setItems(existingProducts);
+//        //FINALLY ADDED TO TableView
+//        existingProductsTable.setItems(existingProducts);
 
         rs.close();
         addProduct.close();
@@ -193,7 +193,7 @@ public class Controller {
 
     try {
 
-      existingProducts.clear();
+        existingProducts.clear();
         while (rs.next()) {
           //Iterate Row
           ObservableList<String> row = FXCollections.observableArrayList();
