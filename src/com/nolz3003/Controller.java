@@ -74,13 +74,15 @@ public class Controller {
       stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery(sql);
       populateExistingProducts(rs);
+      existingProductsTable.setEditable(true);
+      existingProductsTable.setItems(existingProducts);
+
       rs.close();
     } catch (SQLException e) {
       e.printStackTrace();
     }
 
-    existingProductsTable.setEditable(true);
-    existingProductsTable.setItems(existingProducts);
+
 
     try {
       // Populate Item Type ComboBox
@@ -190,10 +192,8 @@ public class Controller {
   protected void populateExistingProducts(ResultSet rs) {
 
     try {
-      if (existingProducts.isEmpty()) {
-        existingProducts.add(new Product("", "", ""));
-      } else {
-        existingProducts.clear();
+
+      existingProducts.clear();
         while (rs.next()) {
           //Iterate Row
           ObservableList<String> row = FXCollections.observableArrayList();
@@ -208,7 +208,10 @@ public class Controller {
           System.out.println("Row added " + row);
         }
 
+      if (existingProducts.isEmpty()) {
+        existingProducts.add(new Product("", "", ""));
       }
+
     } catch (SQLException ex) {
       ex.printStackTrace();
     } catch (Exception ex) {
