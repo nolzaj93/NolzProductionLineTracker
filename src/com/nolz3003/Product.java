@@ -1,6 +1,7 @@
 /**
- * The Product class holds the data for each product added to the Existing Product table.
- * Date: 9/28/19
+ * The Product class holds the data for each product added to the Existing Product table. Date:
+ * 9/28/19
+ *
  * @author Austin Nolz
  */
 
@@ -9,7 +10,7 @@ package com.nolz3003;
 import javafx.beans.property.SimpleStringProperty;
 
 @SuppressWarnings("unused")
-public class Product {
+public class Product implements Item {
 
   private final SimpleStringProperty productName = new SimpleStringProperty("");
   private final SimpleStringProperty manufacturer = new SimpleStringProperty("");
@@ -24,6 +25,12 @@ public class Product {
     setProductName(productName);
     setManufacturer(manufacturer);
     setItemType(itemType);
+  }
+
+  public String toString() {
+    return "Name: " + productName + "\n"
+        + "Manufacturer: " + manufacturer + "\n"
+        + "Type: " + itemType;
   }
 
   public String getProductName() {

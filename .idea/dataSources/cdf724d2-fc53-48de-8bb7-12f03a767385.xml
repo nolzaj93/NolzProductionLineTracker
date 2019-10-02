@@ -20,7 +20,7 @@
       <DataType>INTEGER(10)|4s</DataType>
       <NotNull>1</NotNull>
       <SequenceIdentity>1</SequenceIdentity>
-      <DefaultExpression>(NEXT VALUE FOR PUBLIC.SYSTEM_SEQUENCE_BC373453_6D8D_458D_BCE4_4B463EB9D689)</DefaultExpression>
+      <DefaultExpression>(NEXT VALUE FOR PUBLIC.SYSTEM_SEQUENCE_0AB02E2F_3751_49C6_BBF3_FA5014CFED2D)</DefaultExpression>
     </column>
     <column id="8" parent="5" name="NAME">
       <Position>2</Position>
@@ -52,7 +52,7 @@
       <DataType>INTEGER(10)|4s</DataType>
       <NotNull>1</NotNull>
       <SequenceIdentity>1</SequenceIdentity>
-      <DefaultExpression>(NEXT VALUE FOR PUBLIC.SYSTEM_SEQUENCE_B530CD33_6F32_4699_B7BE_39E4FDB29813)</DefaultExpression>
+      <DefaultExpression>(NEXT VALUE FOR PUBLIC.SYSTEM_SEQUENCE_BD3843D7_50ED_4A96_8357_5C4539BFAE94)</DefaultExpression>
     </column>
     <column id="15" parent="6" name="PRODUCT_ID">
       <Position>2</Position>

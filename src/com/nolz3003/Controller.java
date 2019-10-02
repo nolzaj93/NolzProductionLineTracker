@@ -14,8 +14,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -87,11 +85,10 @@ public class Controller {
     }
 
     try {
-      // Populate Item Type ComboBox
-      itemTypeCombo.getItems().add("AUDIO");
-      itemTypeCombo.getItems().add("VIDEO");
-      itemTypeCombo.getItems().add("AUDIOMOBILE");
-      itemTypeCombo.getItems().add("VIDEOMOBILE");
+
+      for (ItemType it : ItemType.values()) {
+        itemTypeCombo.getItems().add(it.code);
+      }
 
     } catch (Exception ex) {
       ex.printStackTrace();

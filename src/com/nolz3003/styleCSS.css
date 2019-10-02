@@ -9,9 +9,15 @@
   -fx-text-fill: white;
   -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.5), 0, 0, 0, 1);
 }
-
+.text-field{
+  -fx-background-color: linear-gradient(#3c3c3c, gray);
+  -fx-text-fill: white;
+}
+.choice-box:hover{
+  -fx-background-color: linear-gradient(#0047AB, #086522);
+}
 .button:hover {
-  -fx-background-color: linear-gradient(#2A5058, #61a2b1);
+  -fx-background-color: linear-gradient(#0047AB, #086522);
 }
 
 .tab-pane .tab-header-area .tab-header-background {
@@ -42,8 +48,9 @@
   -fx-font-size: 12px;
   -fx-font-weight: bold;
 }
+
 /*.tab-pane * .tab-header-background{*/
-  /*-fx-background-color: gray;*/
+/*-fx-background-color: gray;*/
 /*}*/
 .tab:selected .tab-label {
   -fx-alignment: CENTER;
@@ -63,12 +70,13 @@
 
 .table-view .table-row-cell {
   -fx-cell-size: 35;
-  -fx-background-color: gray;
+  -fx-background-color: linear-gradient(black, #3c3c3c);
   -fx-border-color: #29292D;
   -fx-text-fill: white;
   -fx-alignment: CENTER_LEFT;
 
 }
+
 .table-view .cell {
   -fx-cell-size: 35;
   -fx-border-color: #29292D;
@@ -78,12 +86,11 @@
 }
 
 .table-view .table-row-cell:selected {
-  -fx-background-color: black;
-  -fx-text-background-color: black;
+  -fx-background-color: linear-gradient(#0047AB, #086522);
 }
 
 .choice-box .context-menu {
-  -fx-background-color: gray;
+  -fx-background-color: linear-gradient(#0047AB, #086522);
 }
 
 .choice-box .menu-item:focused {
@@ -97,8 +104,13 @@
 .choice-box .menu-item:focused > .label {
   -fx-text-fill: white;
 }
-.choice-box{
-  -fx-background-color: gray;
+
+.choice-box {
+  -fx-background-color: linear-gradient(black, #3c3c3c);
   -fx-text-fill: black;
 }
 
+.button {
+  -fx-background-color: linear-gradient(black, #3c3c3c);
+  -fx-text-fill: white;
+}
