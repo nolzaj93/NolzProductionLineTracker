@@ -20,7 +20,7 @@
 
 .tab-pane {
   -fx-tab-min-width: 90px;
-  -fx-background-color: linear-gradient(black, gray);
+  -fx-background-color: linear-gradient(black, #3c3c3c);
 }
 
 .tab {
@@ -61,19 +61,25 @@
   -fx-alignment: CENTER_LEFT;
 }
 
+.table-view .table-row-cell {
+  -fx-cell-size: 35;
+  -fx-background-color: gray;
+  -fx-border-color: #29292D;
+  -fx-text-fill: white;
+  -fx-alignment: CENTER_LEFT;
+
+}
 .table-view .cell {
   -fx-cell-size: 35;
-  -fx-alignment: center-left;
-  -fx-background-color: Black;
   -fx-border-color: #29292D;
   -fx-text-fill: white;
   -fx-alignment: CENTER_LEFT;
 
 }
 
-.table-row-cell:selected {
-  -fx-background-color: whitesmoke;
-  -fx-text-background-color: Gray;
+.table-view .table-row-cell:selected {
+  -fx-background-color: black;
+  -fx-text-background-color: black;
 }
 
 .choice-box .context-menu {

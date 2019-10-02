@@ -14,6 +14,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -22,6 +24,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 
 public class Controller {
 
@@ -46,6 +49,7 @@ public class Controller {
   private Statement stmt;
 
   private ObservableList<Product> existingProducts;
+  private Product selectedProduct = null;
 
   private static final String JDBC_DRIVER = "org.h2.Driver";
   private static final String DB_URL = "jdbc:h2:./res/HR;DB_CLOSE_DELAY=-1";
@@ -75,7 +79,6 @@ public class Controller {
       stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery(sql);
       populateExistingProducts(rs);
-      existingProductsTable.setEditable(true);
       existingProductsTable.setItems(existingProducts);
 
       rs.close();
@@ -98,8 +101,36 @@ public class Controller {
 
     // Show 1 as the default value.
     quantity.getSelectionModel().selectFirst();
+
+//    existingProductsTable.getSelectionModel().selectedItemProperty()
+//        .addListener(((observable, oldValue, newValue) -> {
+//          if (newValue != null) {
+//            clear();
+//          }
+//        }));
+
+
   }
 
+  @FXML
+  private void displaySelectedProduct(MouseEvent event) {
+
+    selectedProduct = existingProductsTable.getSelectionModel().getSelectedItem();
+    if(selectedProduct != null){
+      System.out.println(selectedProduct.getProductName());
+    }
+  }
+
+//  private void selectProduct() {
+//    clear();
+//    selectedProduct = existingProductsTable.getSelectionModel().getSelectedItem();
+//   existingProductsTable.getSelectionModel().select(selectedProduct);
+//  }
+//
+//  private void clear() {
+//    selectedProduct = null;
+//    existingProductsTable.getSelectionModel().clearSelection();
+//  }
 
   /**
    * This method makes an attempt to connect to the H2 local database.
@@ -193,20 +224,20 @@ public class Controller {
 
     try {
 
-        existingProducts.clear();
-        while (rs.next()) {
-          //Iterate Row
-          ObservableList<String> row = FXCollections.observableArrayList();
-          for (int i = 1; i <= 3; i++) {
-            row.add(rs.getString(i));
-          }
-
-          String productName = row.get(0);
-          String manufacturer = row.get(1);
-          String itemType = row.get(2);
-          existingProducts.add(new Product(productName, manufacturer, itemType));
-          System.out.println("Row added " + row);
+      existingProducts.clear();
+      while (rs.next()) {
+        //Iterate Row
+        ObservableList<String> row = FXCollections.observableArrayList();
+        for (int i = 1; i <= 3; i++) {
+          row.add(rs.getString(i));
         }
+
+        String productName = row.get(0);
+        String manufacturer = row.get(1);
+        String itemType = row.get(2);
+        existingProducts.add(new Product(productName, manufacturer, itemType));
+        System.out.println("Row added " + row);
+      }
 
       if (existingProducts.isEmpty()) {
         existingProducts.add(new Product("", "", ""));
