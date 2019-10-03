@@ -36,10 +36,11 @@ public abstract class Product implements Item {
         + "Type: " + itemType;
   }
 
-  public int getId(){
+  public int getId() {
 
     return id;
   }
+
   public String getProductName() {
     return productName.get();
   }
@@ -75,9 +76,11 @@ public abstract class Product implements Item {
   private void setItemType(String itemType) {
     this.itemType.set(itemType);
   }
+
   public final SimpleStringProperty valueProperty() {
     return this.productName;
   }
+
   public final String getValue() {
     return this.valueProperty().get();
   }

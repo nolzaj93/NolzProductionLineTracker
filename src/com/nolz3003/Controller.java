@@ -64,7 +64,6 @@ public class Controller {
   private Statement stmt;
 
   private ObservableList<Product> existingProducts;
-  private Product selectedProduct = null;
 
   private static final String JDBC_DRIVER = "org.h2.Driver";
   private static final String DB_URL = "jdbc:h2:./res/HR;DB_CLOSE_DELAY=-1";
@@ -77,9 +76,9 @@ public class Controller {
    * Credit for the editable cell implementation goes to James_D on StackOverflow
    * https://stackoverflow.com/questions/28414825/make-individual-cell-editable-in-javafx-tableview
    */
-  PseudoClass editableCssClass = PseudoClass.getPseudoClass("editable");
-  Callback<TableColumn<Widget, String>, TableCell<Widget, String>> defaultTextFieldCellFactory
-      = TextFieldTableCell.<Widget>forTableColumn();
+  private PseudoClass editableCssClass = PseudoClass.getPseudoClass("editable");
+  private Callback<TableColumn<Widget, String>, TableCell<Widget, String>> defaultTextFieldCellFactory
+      = TextFieldTableCell.forTableColumn();
 
   /**
    * This method is called by default because this Controller class implements Initializable.
@@ -99,15 +98,6 @@ public class Controller {
 
     try {
       existingProductsTable.setEditable(true);
-
-      Callback<TableColumn<Widget, String>, TableCell<Widget, String>> defaultTextFieldCellFactory
-          = TextFieldTableCell.forTableColumn();
-
-    } catch (Exception ex) {
-
-    }
-
-    try {
 
       stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery(sql);
@@ -151,23 +141,14 @@ public class Controller {
         }
         cell.pseudoClassStateChanged(editableCssClass, cell.isEditable());
       });
-      return cell ;
+      return cell;
     });
-
-
-//    existingProductsTable.getSelectionModel().selectedItemProperty()
-//        .addListener(((observable, oldValue, newValue) -> {
-//          if (newValue != null) {
-//            clear();
-//          }
-//        }));
-
   }
 
   @FXML
   private void displaySelectedProduct(MouseEvent event) {
 
-    selectedProduct = existingProductsTable.getSelectionModel().getSelectedItem();
+    Product selectedProduct = existingProductsTable.getSelectionModel().getSelectedItem();
     if (selectedProduct != null) {
       System.out.println(selectedProduct.getProductName());
     }
@@ -231,8 +212,8 @@ public class Controller {
       String addProductString = "INSERT INTO PRODUCT(NAME, MANUFACTURER, TYPE) VALUES (?,?,?)";
       String showProductsString = "SELECT NAME,MANUFACTURER,TYPE FROM PRODUCT";
 
-      PreparedStatement addProduct = null;
-      PreparedStatement showProducts = null;
+      PreparedStatement addProduct;
+      PreparedStatement showProducts;
 
       String enteredProductName = productNameField.getText();
       productNameField.clear();
@@ -272,7 +253,7 @@ public class Controller {
     }
   }
 
-  protected void populateExistingProducts(ResultSet rs) {
+  private void populateExistingProducts(ResultSet rs) {
 
     try {
 
@@ -297,14 +278,13 @@ public class Controller {
 
     } catch (SQLException ex) {
       ex.printStackTrace();
-    } catch (Exception ex) {
-      ex.printStackTrace();
     }
   }
 
-  private <S,T> TableColumn<S,T> createCol(String title, Function<S, ObservableValue<T>> property) {
-    TableColumn<S,T> col = new TableColumn<>(title);
-    col.setCellValueFactory(cellData -> property.apply(cellData.getValue()));
-    return col ;
-  }
+//  private <S, T> TableColumn<S, T> createCol(String title,
+//      Function<S, ObservableValue<T>> property) {
+//    TableColumn<S, T> col = new TableColumn<>(title);
+//    col.setCellValueFactory(cellData -> property.apply(cellData.getValue()));
+//    return col;
+//  }
 }
