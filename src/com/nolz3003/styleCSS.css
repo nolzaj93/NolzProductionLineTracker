@@ -3,19 +3,31 @@
     Contains the style attributes for menu.fxml
     Date : 9/28/19
 */
+.root {
+  -fx-focus-color: transparent;
+  -fx-background-color: black;
+  -fx-background-color: linear-gradient(black, #3c3c3c);
+}
+
 .label {
   -fx-font-size: 12px;
   -fx-font-weight: bold;
   -fx-text-fill: white;
   -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.5), 0, 0, 0, 1);
 }
-.text-field{
+
+.text-field {
   -fx-background-color: linear-gradient(#3c3c3c, gray);
   -fx-text-fill: white;
+  -fx-border-radius: 5;
+  -fx-border-color: linear-gradient(gold, silver);
+
 }
-.choice-box:hover{
+
+.choice-box:hover {
   -fx-background-color: linear-gradient(#0047AB, #086522);
 }
+
 .button:hover {
   -fx-background-color: linear-gradient(#0047AB, #086522);
 }
@@ -26,7 +38,6 @@
 
 .tab-pane {
   -fx-tab-min-width: 90px;
-  -fx-background-color: linear-gradient(black, #3c3c3c);
 }
 
 .tab {
@@ -34,17 +45,19 @@
 }
 
 .tab-pane .tab {
-  -fx-background-color: #e6e6e6;
-
+  -fx-background-color: linear-gradient(black, #3c3c3c);
+  -fx-border-color: linear-gradient(gold, silver);
+  -fx-border-radius: 3;
 }
 
 .tab-pane .tab:selected {
-  -fx-background-color: #3c3c3c;
+  -fx-background-color: linear-gradient(#0047AB, #086522);
+
 }
 
 .tab .tab-label {
   -fx-alignment: CENTER;
-  -fx-text-fill: #828282;
+  -fx-text-fill: white;
   -fx-font-size: 12px;
   -fx-font-weight: bold;
 }
@@ -68,21 +81,23 @@
   -fx-alignment: CENTER_LEFT;
 }
 
-.table-view .table-row-cell {
+.table-row-cell {
   -fx-cell-size: 35;
   -fx-background-color: linear-gradient(black, #3c3c3c);
-  -fx-border-color: #29292D;
   -fx-text-fill: white;
   -fx-alignment: CENTER_LEFT;
+}
 
+.table-view {
+  -fx-border-radius: 50;
 }
 
 .table-view .cell {
   -fx-cell-size: 35;
-  -fx-border-color: #29292D;
+  -fx-border-color: linear-gradient(black, #3c3c3c);
   -fx-text-fill: white;
   -fx-alignment: CENTER_LEFT;
-
+  -fx-border-radius: 5;
 }
 
 .table-view .table-row-cell:selected {
@@ -91,10 +106,15 @@
 
 .choice-box .context-menu {
   -fx-background-color: linear-gradient(#0047AB, #086522);
+  -fx-border-color: linear-gradient(gold, silver);
+  -fx-border-radius: 5;
 }
 
 .choice-box .menu-item:focused {
   -fx-background-color: black;
+  -fx-border-color: linear-gradient(gold, silver);
+  -fx-border-radius: 5;
+
 }
 
 .choice-box .menu-item > .label {
@@ -108,9 +128,13 @@
 .choice-box {
   -fx-background-color: linear-gradient(black, #3c3c3c);
   -fx-text-fill: black;
+  -fx-border-color: linear-gradient(gold, silver);
+  -fx-border-radius: 5;
 }
 
 .button {
   -fx-background-color: linear-gradient(black, #3c3c3c);
   -fx-text-fill: white;
+  -fx-border-color: linear-gradient(gold, silver);
+  -fx-border-radius: 5;
 }

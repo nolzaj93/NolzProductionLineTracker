@@ -232,12 +232,12 @@ public class Controller {
         String productName = row.get(0);
         String manufacturer = row.get(1);
         String itemType = row.get(2);
-        existingProducts.add(new Product(productName, manufacturer, itemType));
+        existingProducts.add(new NewItem(productName, manufacturer, itemType));
         System.out.println("Row added " + row);
       }
 
       if (existingProducts.isEmpty()) {
-        existingProducts.add(new Product("", "", ""));
+        existingProducts.add(new NewItem("", "", ""));
       }
 
     } catch (SQLException ex) {

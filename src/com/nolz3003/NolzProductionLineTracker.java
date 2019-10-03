@@ -24,12 +24,11 @@ public class NolzProductionLineTracker extends Application {
   public void start(Stage primaryStage) throws Exception {
     Parent root = FXMLLoader.load(getClass().getResource("menu.fxml"));
 
-    Scene scene = new Scene(root, 600, 400);
+    Scene scene = new Scene(root, 700, 600);
     primaryStage.setTitle("Production Line Tracker");
     primaryStage.setScene(scene);
     scene.getStylesheets()
         .add(NolzProductionLineTracker.class.getResource("styleCSS.css").toExternalForm());
-
     primaryStage.show();
 
     //primaryStage.setTitle("Hello World");

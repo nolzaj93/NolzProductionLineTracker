@@ -10,11 +10,13 @@ package com.nolz3003;
 import javafx.beans.property.SimpleStringProperty;
 
 @SuppressWarnings("unused")
-public class Product implements Item {
+public abstract class Product implements Item {
 
   private final SimpleStringProperty productName = new SimpleStringProperty("");
   private final SimpleStringProperty manufacturer = new SimpleStringProperty("");
   private final SimpleStringProperty itemType = new SimpleStringProperty("");
+  private int id;
+  private static int productionNumber;
 
   public Product() {
     this("", "", "");
@@ -25,6 +27,7 @@ public class Product implements Item {
     setProductName(productName);
     setManufacturer(manufacturer);
     setItemType(itemType);
+    id = ++productionNumber;
   }
 
   public String toString() {
@@ -33,6 +36,10 @@ public class Product implements Item {
         + "Type: " + itemType;
   }
 
+  public int getId(){
+
+    return id;
+  }
   public String getProductName() {
     return productName.get();
   }
@@ -41,7 +48,7 @@ public class Product implements Item {
     return productName;
   }
 
-  private void setProductName(String productName) {
+  public void setProductName(String productName) {
     this.productName.set(productName);
   }
 
@@ -53,7 +60,7 @@ public class Product implements Item {
     return manufacturer;
   }
 
-  private void setManufacturer(String manufacturer) {
+  public void setManufacturer(String manufacturer) {
     this.manufacturer.set(manufacturer);
   }
 
