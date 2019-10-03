@@ -12,9 +12,9 @@ import javafx.beans.property.SimpleStringProperty;
 @SuppressWarnings("unused")
 public abstract class Product implements Item {
 
-  private final SimpleStringProperty productName = new SimpleStringProperty("");
-  private final SimpleStringProperty manufacturer = new SimpleStringProperty("");
-  private final SimpleStringProperty itemType = new SimpleStringProperty("");
+  private SimpleStringProperty productName = new SimpleStringProperty("");
+  private SimpleStringProperty manufacturer = new SimpleStringProperty("");
+  private SimpleStringProperty itemType = new SimpleStringProperty("");
   private int id;
   private static int productionNumber;
 
@@ -74,6 +74,12 @@ public abstract class Product implements Item {
 
   private void setItemType(String itemType) {
     this.itemType.set(itemType);
+  }
+  public final SimpleStringProperty valueProperty() {
+    return this.productName;
+  }
+  public final String getValue() {
+    return this.valueProperty().get();
   }
 
 }

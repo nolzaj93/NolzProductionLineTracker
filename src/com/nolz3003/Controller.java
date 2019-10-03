@@ -14,15 +14,23 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.function.Function;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseEvent;
+import javafx.util.Callback;
 
 public class Controller {
 
@@ -41,6 +49,15 @@ public class Controller {
   private TableView<Product> existingProductsTable = new TableView<>();
 
   @FXML
+  private TableColumn<Widget, String> productNameColumn;
+
+  @FXML
+  private TableColumn<Widget, String> manufacturerColumn;
+
+  @FXML
+  private TableColumn<Widget, String> itemTypeColumn;
+
+  @FXML
   private ComboBox<String> quantity;
 
   @FXML
@@ -55,6 +72,14 @@ public class Controller {
   //  Database credentials
   private static final String USER = "";
   private static final String PASS = "";
+
+  /*
+   * Credit for the editable cell implementation goes to James_D on StackOverflow
+   * https://stackoverflow.com/questions/28414825/make-individual-cell-editable-in-javafx-tableview
+   */
+  PseudoClass editableCssClass = PseudoClass.getPseudoClass("editable");
+  Callback<TableColumn<Widget, String>, TableCell<Widget, String>> defaultTextFieldCellFactory
+      = TextFieldTableCell.<Widget>forTableColumn();
 
   /**
    * This method is called by default because this Controller class implements Initializable.
@@ -71,6 +96,16 @@ public class Controller {
       quantity.getItems().add(Integer.toString(count));
     }
     String sql = "SELECT NAME,MANUFACTURER,TYPE FROM PRODUCT";
+
+    try {
+      existingProductsTable.setEditable(true);
+
+      Callback<TableColumn<Widget, String>, TableCell<Widget, String>> defaultTextFieldCellFactory
+          = TextFieldTableCell.forTableColumn();
+
+    } catch (Exception ex) {
+
+    }
 
     try {
 
@@ -99,6 +134,27 @@ public class Controller {
     // Show 1 as the default value.
     quantity.getSelectionModel().selectFirst();
 
+    productNameColumn.setCellFactory(col -> {
+      TableCell<Widget, String> cell = defaultTextFieldCellFactory.call(col);
+      cell.itemProperty().addListener((obs, oldValue, newValue) -> {
+        TableRow row = cell.getTableRow();
+        if (row == null) {
+          cell.setEditable(false);
+        } else {
+          Product product = (Widget) cell.getTableRow().getItem();
+          if (product == null) {
+            cell.setEditable(false);
+          } else {
+            cell.setEditable(true);
+          }
+          cell.pseudoClassStateChanged(editableCssClass, cell.isEditable());
+        }
+        cell.pseudoClassStateChanged(editableCssClass, cell.isEditable());
+      });
+      return cell ;
+    });
+
+
 //    existingProductsTable.getSelectionModel().selectedItemProperty()
 //        .addListener(((observable, oldValue, newValue) -> {
 //          if (newValue != null) {
@@ -106,14 +162,13 @@ public class Controller {
 //          }
 //        }));
 
-
   }
 
   @FXML
   private void displaySelectedProduct(MouseEvent event) {
 
     selectedProduct = existingProductsTable.getSelectionModel().getSelectedItem();
-    if(selectedProduct != null){
+    if (selectedProduct != null) {
       System.out.println(selectedProduct.getProductName());
     }
   }
@@ -232,12 +287,12 @@ public class Controller {
         String productName = row.get(0);
         String manufacturer = row.get(1);
         String itemType = row.get(2);
-        existingProducts.add(new NewItem(productName, manufacturer, itemType));
+        existingProducts.add(new Widget(productName, manufacturer, itemType));
         System.out.println("Row added " + row);
       }
 
       if (existingProducts.isEmpty()) {
-        existingProducts.add(new NewItem("", "", ""));
+        existingProducts.add(new Widget("", "", ""));
       }
 
     } catch (SQLException ex) {
@@ -245,5 +300,11 @@ public class Controller {
     } catch (Exception ex) {
       ex.printStackTrace();
     }
+  }
+
+  private <S,T> TableColumn<S,T> createCol(String title, Function<S, ObservableValue<T>> property) {
+    TableColumn<S,T> col = new TableColumn<>(title);
+    col.setCellValueFactory(cellData -> property.apply(cellData.getValue()));
+    return col ;
   }
 }
