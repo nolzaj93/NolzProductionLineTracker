@@ -20,8 +20,11 @@
   -fx-background-color: linear-gradient(#3c3c3c, gray);
   -fx-text-fill: white;
   -fx-border-radius: 5;
-  -fx-border-color: linear-gradient(gold, silver);
+  -fx-border-color: gold;
+}
 
+.text-field:focused {
+  -fx-background-color: linear-gradient(#0047AB, #086522);
 }
 
 .choice-box:hover {
@@ -46,7 +49,7 @@
 
 .tab-pane .tab {
   -fx-background-color: linear-gradient(black, #3c3c3c);
-  -fx-border-color: linear-gradient(gold, silver);
+  -fx-border-color: gold;
   -fx-border-radius: 3;
 }
 
@@ -89,7 +92,12 @@
 }
 
 .table-view {
-  -fx-border-radius: 50;
+  -fx-border-radius: 20;
+  -fx-border-color: gold;
+}
+
+.table-view:focused {
+  -fx-focus-color: transparent;
 }
 
 .table-view .cell {
@@ -106,15 +114,14 @@
 
 .choice-box .context-menu {
   -fx-background-color: linear-gradient(#0047AB, #086522);
-  -fx-border-color: linear-gradient(gold, silver);
+  -fx-border-color: gold;
   -fx-border-radius: 5;
 }
 
 .choice-box .menu-item:focused {
   -fx-background-color: black;
-  -fx-border-color: linear-gradient(gold, silver);
+  -fx-border-color: gold;
   -fx-border-radius: 5;
-
 }
 
 .choice-box .menu-item > .label {
@@ -128,13 +135,17 @@
 .choice-box {
   -fx-background-color: linear-gradient(black, #3c3c3c);
   -fx-text-fill: black;
-  -fx-border-color: linear-gradient(gold, silver);
+  -fx-border-color: gold;
   -fx-border-radius: 5;
 }
 
+.choice-box:focused {
+  -fx-background-color: linear-gradient(#0047AB, #086522);
+
+}
 .button {
   -fx-background-color: linear-gradient(black, #3c3c3c);
   -fx-text-fill: white;
-  -fx-border-color: linear-gradient(gold, silver);
+  -fx-border-color: gold;
   -fx-border-radius: 5;
 }
