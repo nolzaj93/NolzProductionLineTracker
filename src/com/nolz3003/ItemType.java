@@ -8,6 +8,7 @@ public enum ItemType {
   VisualMobile("VM");
 
   private String code;
+
   ItemType(String code) {
     this.code = code;
   }
@@ -15,7 +16,8 @@ public enum ItemType {
   public void setItemTypeCode(String code) {
     this.code = code;
   }
-  public String getItemTypeCode(){
+
+  public String getItemTypeCode() {
     return this.code;
   }
 
