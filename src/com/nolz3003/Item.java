@@ -11,4 +11,8 @@ public interface Item {
   void setManufacturer(String manufacturer);
 
   String getManufacturer();
+
+  void setItemTypeCode(String itemTypeCode);
+
+  String getItemTypeCode();
 }

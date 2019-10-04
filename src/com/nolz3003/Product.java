@@ -10,11 +10,11 @@ package com.nolz3003;
 import javafx.beans.property.SimpleStringProperty;
 
 @SuppressWarnings("unused")
-public abstract class Product implements Item {
+public abstract class Product {
 
   private SimpleStringProperty productName = new SimpleStringProperty("");
   private SimpleStringProperty manufacturer = new SimpleStringProperty("");
-  private SimpleStringProperty itemType = new SimpleStringProperty("");
+  private SimpleStringProperty itemTypeCode = new SimpleStringProperty("");
   private int id;
   private static int productionNumber;
 
@@ -22,18 +22,18 @@ public abstract class Product implements Item {
     this("", "", "");
   }
 
-  public Product(String productName, String manufacturer, String itemType) {
+  public Product(String productName, String manufacturer, String itemTypeCode) {
     //set Product Name, Manufacturer, and itemType
     setProductName(productName);
     setManufacturer(manufacturer);
-    setItemType(itemType);
+    setItemTypeCode(itemTypeCode);
     id = ++productionNumber;
   }
 
   public String toString() {
     return "Name: " + productName + "\n"
         + "Manufacturer: " + manufacturer + "\n"
-        + "Type: " + itemType;
+        + "Type: " + itemTypeCode;
   }
 
   public int getId() {
@@ -65,16 +65,16 @@ public abstract class Product implements Item {
     this.manufacturer.set(manufacturer);
   }
 
-  public String getItemType() {
-    return itemType.get();
+  public String getItemTypeCode() {
+    return itemTypeCode.get();
   }
 
   public SimpleStringProperty itemTypeProperty() {
-    return itemType;
+    return itemTypeCode;
   }
 
-  private void setItemType(String itemType) {
-    this.itemType.set(itemType);
+  private void setItemTypeCode(String itemTypeCode) {
+    this.itemTypeCode.set(itemTypeCode);
   }
 
   public final SimpleStringProperty valueProperty() {

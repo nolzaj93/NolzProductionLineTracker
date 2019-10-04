@@ -14,8 +14,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.function.Function;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
@@ -37,7 +35,7 @@ public class Controller {
   private static Connection conn;
 
   @FXML
-  private ChoiceBox<String> itemTypeCombo;
+  private ChoiceBox<String> itemTypeChoice;
 
   @FXML
   private TextField productNameField;
@@ -71,6 +69,8 @@ public class Controller {
   //  Database credentials
   private static final String USER = "";
   private static final String PASS = "";
+
+  private String itemTypeCode = null;
 
   /*
    * Credit for the editable cell implementation goes to James_D on StackOverflow
@@ -112,7 +112,7 @@ public class Controller {
     try {
 
       for (ItemType it : ItemType.values()) {
-        itemTypeCombo.getItems().add(it.code);
+        itemTypeChoice.getItems().add(it.toString() + " = " + it.getItemTypeCode());
       }
 
     } catch (Exception ex) {
@@ -124,25 +124,25 @@ public class Controller {
     // Show 1 as the default value.
     quantity.getSelectionModel().selectFirst();
 
-    productNameColumn.setCellFactory(col -> {
-      TableCell<Widget, String> cell = defaultTextFieldCellFactory.call(col);
-      cell.itemProperty().addListener((obs, oldValue, newValue) -> {
-        TableRow row = cell.getTableRow();
-        if (row == null) {
-          cell.setEditable(false);
-        } else {
-          Product product = (Widget) cell.getTableRow().getItem();
-          if (product == null) {
-            cell.setEditable(false);
-          } else {
-            cell.setEditable(true);
-          }
-          cell.pseudoClassStateChanged(editableCssClass, cell.isEditable());
-        }
-        cell.pseudoClassStateChanged(editableCssClass, cell.isEditable());
-      });
-      return cell;
-    });
+//    productNameColumn.setCellFactory(col -> {
+//      TableCell<Widget, String> cell = defaultTextFieldCellFactory.call(col);
+//      cell.itemProperty().addListener((obs, oldValue, newValue) -> {
+//        TableRow row = cell.getTableRow();
+//        if (row == null) {
+//          cell.setEditable(false);
+//        } else {
+//          Product product = (Widget) cell.getTableRow().getItem();
+//          if (product == null) {
+//            cell.setEditable(false);
+//          } else {
+//            cell.setEditable(true);
+//          }
+//          cell.pseudoClassStateChanged(editableCssClass, cell.isEditable());
+//        }
+//        cell.pseudoClassStateChanged(editableCssClass, cell.isEditable());
+//      });
+//      return cell;
+//    });
   }
 
   @FXML
@@ -207,11 +207,12 @@ public class Controller {
   protected void addNewProduct(ActionEvent event) throws SQLException {
 
     if (!productNameField.getText().isEmpty() && !manufacturerField.getText().isEmpty()
-        && itemTypeCombo.getValue() != null) {
+        && itemTypeChoice.getValue() != null) {
 
       String addProductString = "INSERT INTO PRODUCT(NAME, MANUFACTURER, TYPE) VALUES (?,?,?)";
       String showProductsString = "SELECT NAME,MANUFACTURER,TYPE FROM PRODUCT";
 
+      // Prepared statements used to add a product to the database and to query the existing products
       PreparedStatement addProduct;
       PreparedStatement showProducts;
 
@@ -219,9 +220,26 @@ public class Controller {
       productNameField.clear();
       String enteredManufacturer = manufacturerField.getText();
       manufacturerField.clear();
-      String enteredItemType = itemTypeCombo.getValue();
+      String enteredItemType = itemTypeChoice.getValue();
+
+      switch (enteredItemType) {
+        case "Audio = AU":
+          itemTypeCode = ItemType.Audio.getItemTypeCode();
+          break;
+        case "Visual = VI":
+          itemTypeCode = ItemType.Visual.getItemTypeCode();
+          break;
+        case "AudioMobile = AM":
+          itemTypeCode = ItemType.AudioMobile.getItemTypeCode();
+          break;
+        case "VisualMobile = VM":
+          itemTypeCode = ItemType.VisualMobile.getItemTypeCode();
+          break;
+        default:
+          break;
+      }
       // Show 1 as the default value.
-      itemTypeCombo.getSelectionModel().selectFirst();
+      itemTypeChoice.getSelectionModel().selectFirst();
 
       try {
 
@@ -229,7 +247,7 @@ public class Controller {
         showProducts = conn.prepareStatement(showProductsString);
         addProduct.setString(1, enteredProductName);
         addProduct.setString(2, enteredManufacturer);
-        addProduct.setString(3, enteredItemType);
+        addProduct.setString(3, itemTypeCode);
 
         //STEP 2: Register JDBC driver
         //Class.forName("com.mysql.jdbc.Driver");
@@ -239,7 +257,7 @@ public class Controller {
         populateExistingProducts(rs);
 
 //        //FINALLY ADDED TO TableView
-//        existingProductsTable.setItems(existingProducts);
+        existingProductsTable.setItems(existingProducts);
 
         rs.close();
         addProduct.close();
@@ -249,7 +267,6 @@ public class Controller {
 
         ex.printStackTrace();
       }
-
     }
   }
 
@@ -267,8 +284,8 @@ public class Controller {
 
         String productName = row.get(0);
         String manufacturer = row.get(1);
-        String itemType = row.get(2);
-        existingProducts.add(new Widget(productName, manufacturer, itemType));
+        String itemTypeCode = row.get(2);
+        existingProducts.add(new Widget(productName, manufacturer, itemTypeCode));
         System.out.println("Row added " + row);
       }
 
