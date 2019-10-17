@@ -1,6 +1,14 @@
 package com.nolz3003;
 
-public class Widget extends NewItem {
+/**
+ * Widget class.
+ *
+ * @author austinnolz
+ *
+ *      The Widget Class is a temporary class used to build a general Product object with a product
+ *      Name manufacturer and item type code.
+ */
+public class Widget extends Product {
 
   public Widget(String prodName, String manufacturer, String itemTypeCode) {
     super(prodName, manufacturer, itemTypeCode);

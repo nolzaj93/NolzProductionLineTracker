@@ -1,11 +1,3 @@
-/**
- * The Controller class listens for user events and updates the view using the Product class. This
- * Controller contains methods to initialize the database, initialize comboBox members, add new
- * products to a database, and display that data to a TableView. Date: 9/28/19
- *
- * @author Austin Nolz
- */
-
 package com.nolz3003;
 
 import java.sql.Connection;
@@ -14,22 +6,22 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.css.PseudoClass;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.input.MouseEvent;
-import javafx.util.Callback;
 
+/**
+ * The Controller class which observes the menu.fxml view.
+ *
+ * @author Austin Nolz The Controller class listens for user events and updates the view using the
+ *         Product class. This Controller contains methods to initialize the database, initialize
+ *         comboBox members, add new products to a database, and display that data to a TableView.
+ */
 public class Controller {
 
   private static Connection conn;
@@ -47,15 +39,6 @@ public class Controller {
   private TableView<Product> existingProductsTable = new TableView<>();
 
   @FXML
-  private TableColumn<Widget, String> productNameColumn;
-
-  @FXML
-  private TableColumn<Widget, String> manufacturerColumn;
-
-  @FXML
-  private TableColumn<Widget, String> itemTypeColumn;
-
-  @FXML
   private ComboBox<String> quantity;
 
   @FXML
@@ -64,7 +47,7 @@ public class Controller {
   private ObservableList<Product> existingProducts;
 
   private static final String JDBC_DRIVER = "org.h2.Driver";
-  private static final String DB_URL = "jdbc:h2:./res/HR;DB_CLOSE_DELAY=-1";
+  private static final String DB_URL = "jdbc:h2:./res/HR";
 
   //  Database credentials
   private static final String USER = "";
@@ -75,15 +58,19 @@ public class Controller {
   /*
    * Credit for the editable cell implementation goes to James_D on StackOverflow
    * https://stackoverflow.com/questions/28414825/make-individual-cell-editable-in-javafx-tableview
+   *
+   * private PseudoClass editableCssClass = PseudoClass.getPseudoClass("editable");
+   * private Callback<TableColumn<Widget, String>,
+   * TableCell<Widget, String>> defaultTextFieldCellFactory
+   *   = TextFieldTableCell.forTableColumn();
    */
-  private PseudoClass editableCssClass = PseudoClass.getPseudoClass("editable");
-  private Callback<TableColumn<Widget, String>, TableCell<Widget, String>> defaultTextFieldCellFactory
-      = TextFieldTableCell.forTableColumn();
 
   /**
    * This method is called by default because this Controller class implements Initializable.
    */
   public void initialize() {
+
+    testMultimedia();
 
     initializeDB();
 
@@ -97,8 +84,6 @@ public class Controller {
     String sql = "SELECT NAME,MANUFACTURER,TYPE FROM PRODUCT";
 
     try {
-      existingProductsTable.setEditable(true);
-
       stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery(sql);
       populateExistingProducts(rs);
@@ -123,47 +108,19 @@ public class Controller {
 
     // Show 1 as the default value.
     quantity.getSelectionModel().selectFirst();
-
-//    productNameColumn.setCellFactory(col -> {
-//      TableCell<Widget, String> cell = defaultTextFieldCellFactory.call(col);
-//      cell.itemProperty().addListener((obs, oldValue, newValue) -> {
-//        TableRow row = cell.getTableRow();
-//        if (row == null) {
-//          cell.setEditable(false);
-//        } else {
-//          Product product = (Widget) cell.getTableRow().getItem();
-//          if (product == null) {
-//            cell.setEditable(false);
-//          } else {
-//            cell.setEditable(true);
-//          }
-//          cell.pseudoClassStateChanged(editableCssClass, cell.isEditable());
-//        }
-//        cell.pseudoClassStateChanged(editableCssClass, cell.isEditable());
-//      });
-//      return cell;
-//    });
   }
 
+  /**
+   * Highlights the selected product in the existing products table.
+   */
   @FXML
-  private void displaySelectedProduct(MouseEvent event) {
+  private void displaySelectedProduct() {
 
     Product selectedProduct = existingProductsTable.getSelectionModel().getSelectedItem();
     if (selectedProduct != null) {
       System.out.println(selectedProduct.getProductName());
     }
   }
-
-//  private void selectProduct() {
-//    clear();
-//    selectedProduct = existingProductsTable.getSelectionModel().getSelectedItem();
-//   existingProductsTable.getSelectionModel().select(selectedProduct);
-//  }
-//
-//  private void clear() {
-//    selectedProduct = null;
-//    existingProductsTable.getSelectionModel().clearSelection();
-//  }
 
   /**
    * This method makes an attempt to connect to the H2 local database.
@@ -199,12 +156,10 @@ public class Controller {
   }
 
   /**
-   * This method adds new products to the database and updates the TableView .
-   *
-   * @param event When the user clicks the Add Product button this method is passed an event
+   * This method adds new products to the database and updates the TableView.
    */
   @FXML
-  protected void addNewProduct(ActionEvent event) throws SQLException {
+  protected void addNewProduct() {
 
     if (!productNameField.getText().isEmpty() && !manufacturerField.getText().isEmpty()
         && itemTypeChoice.getValue() != null) {
@@ -212,7 +167,7 @@ public class Controller {
       String addProductString = "INSERT INTO PRODUCT(NAME, MANUFACTURER, TYPE) VALUES (?,?,?)";
       String showProductsString = "SELECT NAME,MANUFACTURER,TYPE FROM PRODUCT";
 
-      // Prepared statements used to add a product to the database and to query the existing products
+      //Prepared statements used to add a product to the database and to query the existing products
       PreparedStatement addProduct;
       PreparedStatement showProducts;
 
@@ -249,19 +204,18 @@ public class Controller {
         addProduct.setString(2, enteredManufacturer);
         addProduct.setString(3, itemTypeCode);
 
-        //STEP 2: Register JDBC driver
-        //Class.forName("com.mysql.jdbc.Driver");
         addProduct.executeUpdate();
         ResultSet rs = showProducts.executeQuery();
 
         populateExistingProducts(rs);
 
-//        //FINALLY ADDED TO TableView
+        //FINALLY ADDED TO TableView
         existingProductsTable.setItems(existingProducts);
 
         rs.close();
         addProduct.close();
         showProducts.close();
+        conn.close();
 
       } catch (SQLException ex) {
 
@@ -270,6 +224,12 @@ public class Controller {
     }
   }
 
+  /**
+   * This method populates the TableView with the updated data from the database.
+   *
+   * @param rs - The result set returned from the query returns the name, manufacturer and type for
+   *              each row.
+   */
   private void populateExistingProducts(ResultSet rs) {
 
     try {
@@ -278,13 +238,14 @@ public class Controller {
       while (rs.next()) {
         //Iterate Row
         ObservableList<String> row = FXCollections.observableArrayList();
-        for (int i = 1; i <= 3; i++) {
-          row.add(rs.getString(i));
+        for (int count = 1; count <= 3; count++) {
+          row.add(rs.getString(count));
         }
 
         String productName = row.get(0);
         String manufacturer = row.get(1);
         String itemTypeCode = row.get(2);
+
         existingProducts.add(new Widget(productName, manufacturer, itemTypeCode));
         System.out.println("Row added " + row);
       }
@@ -298,10 +259,40 @@ public class Controller {
     }
   }
 
-//  private <S, T> TableColumn<S, T> createCol(String title,
-//      Function<S, ObservableValue<T>> property) {
-//    TableColumn<S, T> col = new TableColumn<>(title);
-//    col.setCellValueFactory(cellData -> property.apply(cellData.getValue()));
-//    return col;
-//  }
+  /**
+   * A method to test the MultimediaController interface.
+   */
+  private static void testMultimedia() {
+
+    AudioPlayer newAudioProduct = new AudioPlayer("DP-X1A", "Onkyo",
+
+        "DSD/FLAC/ALAC/WAV/AIFF/MQA/Ogg-Vorbis/MP3/AAC",
+        "M3U/PLS/WPL");
+
+    Screen newScreen = new Screen("720x480", 40, 22);
+
+    MoviePlayer newMovieProduct = new MoviePlayer("DBPOWER MK101",
+        "OracleProduction", newScreen, MonitorType.LCD);
+
+    ArrayList<MultimediaControl> productList = new ArrayList<>();
+
+    productList.add(newAudioProduct);
+
+    productList.add(newMovieProduct);
+
+    for (MultimediaControl p : productList) {
+
+      System.out.println(p);
+
+      p.play();
+
+      p.stop();
+
+      p.next();
+
+      p.previous();
+
+    }
+
+  }
 }

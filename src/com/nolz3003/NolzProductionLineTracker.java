@@ -1,9 +1,3 @@
-/**
- * The driver class of the application containing main and the start method. Date: 9/28/19
- *
- * @author Austin Nolz
- */
-
 package com.nolz3003;
 
 import javafx.application.Application;
@@ -12,6 +6,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * NolzProductionLineTracker class.
+ *
+ * @author austinnolz
+ *
+ *      The driver class of the application containing main and the start method.
+ */
 public class NolzProductionLineTracker extends Application {
 
   /**
@@ -24,7 +25,7 @@ public class NolzProductionLineTracker extends Application {
   public void start(Stage primaryStage) throws Exception {
     Parent root = FXMLLoader.load(getClass().getResource("menu.fxml"));
 
-    Scene scene = new Scene(root, 700, 600);
+    Scene scene = new Scene(root, 600, 450);
     primaryStage.setTitle("Production Line Tracker");
     primaryStage.setScene(scene);
     scene.getStylesheets()

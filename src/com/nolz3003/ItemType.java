@@ -1,5 +1,8 @@
 package com.nolz3003;
 
+/**
+ * The ItemType enum contains a full string for each item type and a respective item type code.
+ */
 public enum ItemType {
 
   Audio("AU"),
@@ -13,7 +16,7 @@ public enum ItemType {
     this.code = code;
   }
 
-  public void setItemTypeCode(String code) {
+  void setItemTypeCode(String code) {
     this.code = code;
   }
 

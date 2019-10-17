@@ -1,35 +1,48 @@
-/**
- * The Product class holds the data for each product added to the Existing Product table. Date:
- * 9/28/19
- *
- * @author Austin Nolz
- */
-
 package com.nolz3003;
 
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * The Product class.
+ *
+ * @author Austin Nolz
+ *
+ *      The Product class holds the data for each product added to the Existing Product table.
+ */
 @SuppressWarnings("unused")
-public abstract class Product {
+public abstract class Product implements Item {
 
   private SimpleStringProperty productName = new SimpleStringProperty("");
   private SimpleStringProperty manufacturer = new SimpleStringProperty("");
   private SimpleStringProperty itemTypeCode = new SimpleStringProperty("");
+
   private int id;
-  private static int productionNumber;
+  private String itemType;
 
   public Product() {
     this("", "", "");
   }
 
+  /**
+   * Constructor for the Product class.
+   *
+   * @param productName - product name
+   * @param manufacturer - manufacturer
+   * @param itemTypeCode - item type code
+   */
   public Product(String productName, String manufacturer, String itemTypeCode) {
     //set Product Name, Manufacturer, and itemType
     setProductName(productName);
     setManufacturer(manufacturer);
     setItemTypeCode(itemTypeCode);
-    id = ++productionNumber;
   }
 
+  /**
+   * Overridden toString() method, which prints the name, manufacturer, type of the Product object.
+   *
+   * @return - returns the String containing the product information.
+   */
+  @Override
   public String toString() {
     return "Name: " + productName + "\n"
         + "Manufacturer: " + manufacturer + "\n"
@@ -73,7 +86,7 @@ public abstract class Product {
     return itemTypeCode;
   }
 
-  private void setItemTypeCode(String itemTypeCode) {
+  public void setItemTypeCode(String itemTypeCode) {
     this.itemTypeCode.set(itemTypeCode);
   }
 
@@ -85,4 +98,11 @@ public abstract class Product {
     return this.valueProperty().get();
   }
 
+  public String getItemType() {
+    return itemType;
+  }
+
+  void setItemType(String itemType) {
+    this.itemType = itemType;
+  }
 }
