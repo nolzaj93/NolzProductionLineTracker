@@ -19,8 +19,8 @@ import javafx.scene.control.TextField;
  * The Controller class which observes the menu.fxml view.
  *
  * @author Austin Nolz The Controller class listens for user events and updates the view using the
- *         Product class. This Controller contains methods to initialize the database, initialize
- *         comboBox members, add new products to a database, and display that data to a TableView.
+ * Product class. This Controller contains methods to initialize the database, initialize comboBox
+ * members, add new products to a database, and display that data to a TableView.
  */
 public class Controller {
 
@@ -215,7 +215,7 @@ public class Controller {
         rs.close();
         addProduct.close();
         showProducts.close();
-        
+
 
       } catch (SQLException ex) {
 
@@ -228,7 +228,7 @@ public class Controller {
    * This method populates the TableView with the updated data from the database.
    *
    * @param rs - The result set returned from the query returns the name, manufacturer and type for
-   *              each row.
+   * each row.
    */
   private void populateExistingProducts(ResultSet rs) {
 
@@ -293,6 +293,5 @@ public class Controller {
       p.previous();
 
     }
-
   }
 }
