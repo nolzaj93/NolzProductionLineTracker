@@ -32,15 +32,15 @@
 }
 
 .text-field:focused {
-  -fx-background-color: linear-gradient(#0047AB, #086522);
+  -fx-background-color: linear-gradient(#0047AB, #50c878);
 }
 
 .choice-box:hover {
-  -fx-background-color: linear-gradient(#0047AB, #086522);
+  -fx-background-color: linear-gradient(#0047AB, #50c878);
 }
 
 .button:hover {
-  -fx-background-color: linear-gradient(#0047AB, #086522);
+  -fx-background-color: linear-gradient(#0047AB, #50c878);
 }
 
 .tab-pane .tab-header-area .tab-header-background {
@@ -62,7 +62,7 @@
 }
 
 .tab-pane .tab:selected {
-  -fx-background-color: linear-gradient(#0047AB, #086522);
+  -fx-background-color: linear-gradient(#0047AB, #50c878);
 
 }
 
@@ -117,11 +117,11 @@
 }
 
 .table-view .table-row-cell:selected {
-  -fx-background-color: linear-gradient(#0047AB, #086522);
+  -fx-background-color: linear-gradient(#0047AB, #50c878);
 }
 
 .choice-box .context-menu {
-  -fx-background-color: linear-gradient(#0047AB, #086522);
+  -fx-background-color: linear-gradient(#0047AB, #50c878);
   -fx-border-color: gold;
   -fx-border-radius: 5;
 }
@@ -148,7 +148,7 @@
 }
 
 .choice-box:focused {
-  -fx-background-color: linear-gradient(#0047AB, #086522);
+  -fx-background-color: linear-gradient(#0047AB, #50c878);
 
 }
 

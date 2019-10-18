@@ -215,7 +215,7 @@ public class Controller {
         rs.close();
         addProduct.close();
         showProducts.close();
-        conn.close();
+        
 
       } catch (SQLException ex) {
 
