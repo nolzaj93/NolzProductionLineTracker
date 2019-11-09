@@ -5,8 +5,8 @@ package com.nolz3003;
  *
  * @author austinnolz
  *
- *      The MoviePlayer class builds a product object that holds specific data about a
- *      movie player and implement the MultimediaControl interface.
+ * The MoviePlayer class builds a product object that holds specific data about a movie player and
+ * implement the MultimediaControl interface.
  */
 public class MoviePlayer extends Product implements MultimediaControl {
 
@@ -25,7 +25,7 @@ public class MoviePlayer extends Product implements MultimediaControl {
     setScreen(screen);
     setMonitorType(monitorType);
     ItemType it = null;
-    setItemType(it.Visual.name());
+    setItemType(it.VISUAL);
   }
 
   private Screen screen;
@@ -48,26 +48,28 @@ public class MoviePlayer extends Product implements MultimediaControl {
   }
 
   public void play() {
-    System.out.println("Play");
+    System.out.println("Playing movie");
   }
 
   public void stop() {
-    System.out.println("Stop");
+    System.out.println("Stopping movie");
   }
 
   public void previous() {
-    System.out.println("Previous");
+    System.out.println("Previous movie");
   }
 
   public void next() {
-    System.out.println("Next");
+    System.out.println("Next movie");
   }
 
   @Override
   public String toString() {
-    return super.toString() + "Monitor Type: " + monitorType.name() + "\n"
-        + "Resolution: " + screen.getResolution() + "\n"
+    return super.toString() + "Type: VISUAL\n" + "Screen:\n" + "Resolution: " + screen
+        .getResolution()
+        + "\n"
         + "Refresh Rate: " + screen.getRefreshRate() + "\n"
-        + "Response Time: " + screen.getResponseTime() + "\n";
+        + "Response Time: " + screen.getResponseTime() + "\n"
+        + "Monitor Type: " + monitorType.name() + "\n";
   }
 }

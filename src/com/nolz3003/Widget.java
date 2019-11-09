@@ -10,7 +10,7 @@ package com.nolz3003;
  */
 public class Widget extends Product {
 
-  public Widget(String prodName, String manufacturer, String itemTypeCode) {
-    super(prodName, manufacturer, itemTypeCode);
+  public Widget(String prodName, String manufacturer, ItemType itemType) {
+    super(prodName, manufacturer, itemType);
   }
 }

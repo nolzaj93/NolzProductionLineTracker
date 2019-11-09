@@ -1,5 +1,6 @@
 package com.nolz3003;
 
+import java.util.Date;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -23,6 +24,8 @@ public class NolzProductionLineTracker extends Application {
    */
   @Override
   public void start(Stage primaryStage) throws Exception {
+    PlayerDriver.testPlayer();
+
     Parent root = FXMLLoader.load(getClass().getResource("menu.fxml"));
 
     Scene scene = new Scene(root, 600, 450);
@@ -38,6 +41,18 @@ public class NolzProductionLineTracker extends Application {
   }
 
   public static void main(String[] args) {
+
+    Product productProduced = new Widget("iPod", "Apple", ItemType.AUDIO);
+
+    // test constructor used when creating production records from user interface
+    int numProduced = 3;  // this will come from the combobox in the UI
+    int itemCount = 0;
+
+    for (int productionRunProduct = 0; productionRunProduct < numProduced; productionRunProduct++) {
+      ProductionRecord pr = new ProductionRecord(productProduced, itemCount++);
+      // using the iterator as the product id for testing
+      System.out.println(pr.toString());
+    }
 
     launch(args);
   }

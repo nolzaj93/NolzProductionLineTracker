@@ -5,10 +5,11 @@ package com.nolz3003;
  */
 public enum ItemType {
 
-  Audio("AU"),
-  Visual("VI"),
-  AudioMobile("AM"),
-  VisualMobile("VM");
+  AUDIO("AU"),
+  VISUAL("VI"),
+  AUDIOMOBILE("AM"),
+  VISUALMOBILE("VM");
+
 
   private String code;
 
@@ -24,4 +25,11 @@ public enum ItemType {
     return this.code;
   }
 
+  public String getCode() {
+    return code;
+  }
+
+  public void setCode(String code) {
+    this.code = code;
+  }
 }

@@ -7,12 +7,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 /**
@@ -44,6 +46,9 @@ public class Controller {
   @FXML
   private Statement stmt;
 
+  @FXML
+  private TextArea pLogTextArea;
+
   private ObservableList<Product> existingProducts;
 
   private static final String JDBC_DRIVER = "org.h2.Driver";
@@ -69,6 +74,28 @@ public class Controller {
    * This method is called by default because this Controller class implements Initializable.
    */
   public void initialize() {
+    // test constructor used when creating production records from user interface
+    Integer numProduced = 3;  // this will come from the combobox in the UI
+
+    for (int productionRunProduct = 0; productionRunProduct < numProduced; productionRunProduct++) {
+      ProductionRecord pr = new ProductionRecord(0);
+
+      pLogTextArea.appendText(pr.toString());
+
+    }
+
+    // test constructor used when creating production records from reading database
+    ProductionRecord pr = new ProductionRecord(0, 3, "1", new Date());
+
+    // testing accessors and mutators
+    pr.setProductionNum(1);
+    pr.setProductID(4);
+    pr.setSerialNum("2");
+    pr.setProdDate(new Date());
+    pLogTextArea.appendText(pr.toString());
+
+
+    //Display the production record in the TextArea on the Production Log tab.
 
     testMultimedia();
 
@@ -164,31 +191,37 @@ public class Controller {
     if (!productNameField.getText().isEmpty() && !manufacturerField.getText().isEmpty()
         && itemTypeChoice.getValue() != null) {
 
-      String addProductString = "INSERT INTO PRODUCT(NAME, MANUFACTURER, TYPE) VALUES (?,?,?)";
-      String showProductsString = "SELECT NAME,MANUFACTURER,TYPE FROM PRODUCT";
-
-      //Prepared statements used to add a product to the database and to query the existing products
-      PreparedStatement addProduct;
-      PreparedStatement showProducts;
-
       String enteredProductName = productNameField.getText();
-      productNameField.clear();
+
+      for (Product product : existingProducts) {
+        if (product.getProductName().equals(enteredProductName))
+          //Set Error message visible (Product already exists)
+          return;
+
+      }
+      String addProductString = "INSERT INTO PRODUCT(NAME, MANUFACTURER, TYPE) VALUES (?,?,?)";
+
       String enteredManufacturer = manufacturerField.getText();
       manufacturerField.clear();
       String enteredItemType = itemTypeChoice.getValue();
 
+      ItemType it = null;
       switch (enteredItemType) {
-        case "Audio = AU":
-          itemTypeCode = ItemType.Audio.getItemTypeCode();
+        case "AUDIO = AU":
+          itemTypeCode = ItemType.AUDIO.getItemTypeCode();
+          it = ItemType.AUDIO;
           break;
-        case "Visual = VI":
-          itemTypeCode = ItemType.Visual.getItemTypeCode();
+        case "VISUAL = VI":
+          itemTypeCode = ItemType.VISUAL.getItemTypeCode();
+          it = ItemType.VISUAL;
           break;
-        case "AudioMobile = AM":
-          itemTypeCode = ItemType.AudioMobile.getItemTypeCode();
+        case "AUDIOMOBILE = AM":
+          itemTypeCode = ItemType.AUDIOMOBILE.getItemTypeCode();
+          it = ItemType.AUDIOMOBILE;
           break;
-        case "VisualMobile = VM":
-          itemTypeCode = ItemType.VisualMobile.getItemTypeCode();
+        case "VISUALMOBILE = VM":
+          itemTypeCode = ItemType.VISUALMOBILE.getItemTypeCode();
+          it = ItemType.VISUALMOBILE;
           break;
         default:
           break;
@@ -196,26 +229,20 @@ public class Controller {
       // Show 1 as the default value.
       itemTypeChoice.getSelectionModel().selectFirst();
 
+      //Prepared statements used to add a product to the database and to query the existing products
+      PreparedStatement addProduct;
+
       try {
 
         addProduct = conn.prepareStatement(addProductString);
-        showProducts = conn.prepareStatement(showProductsString);
         addProduct.setString(1, enteredProductName);
         addProduct.setString(2, enteredManufacturer);
         addProduct.setString(3, itemTypeCode);
 
         addProduct.executeUpdate();
-        ResultSet rs = showProducts.executeQuery();
+        existingProducts.add(new Widget(enteredProductName, enteredManufacturer, it));
 
-        populateExistingProducts(rs);
-
-        //FINALLY ADDED TO TableView
-        existingProductsTable.setItems(existingProducts);
-
-        rs.close();
         addProduct.close();
-        showProducts.close();
-
 
       } catch (SQLException ex) {
 
@@ -234,7 +261,6 @@ public class Controller {
 
     try {
 
-      existingProducts.clear();
       while (rs.next()) {
         //Iterate Row
         ObservableList<String> row = FXCollections.observableArrayList();
@@ -244,15 +270,32 @@ public class Controller {
 
         String productName = row.get(0);
         String manufacturer = row.get(1);
-        String itemTypeCode = row.get(2);
+        String itemType = row.get(2);
+        ItemType it = null;
+        switch(itemType) {
+          case "AU":
+            it = ItemType.AUDIO;
+            break;
+          case "VI":
+            it = ItemType.VISUAL;
+            break;
+          case "AM":
+            it = ItemType.AUDIOMOBILE;
+            break;
+          case "VM":
+            it = ItemType.VISUALMOBILE;
+            break;
+          default:
+            break;
+        }
 
-        existingProducts.add(new Widget(productName, manufacturer, itemTypeCode));
+        existingProducts.add(new Widget(productName, manufacturer, it));
         System.out.println("Row added " + row);
       }
 
-      if (existingProducts.isEmpty()) {
-        existingProducts.add(new Widget("", "", ""));
-      }
+//      if (existingProducts.isEmpty()) {
+//        existingProducts.add(new Widget("", "", null));
+//      }
 
     } catch (SQLException ex) {
       ex.printStackTrace();

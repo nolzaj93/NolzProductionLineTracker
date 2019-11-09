@@ -1,7 +1,5 @@
 package com.nolz3003;
 
-import javafx.beans.property.SimpleStringProperty;
-
 /**
  * The Product class.
  *
@@ -12,15 +10,15 @@ import javafx.beans.property.SimpleStringProperty;
 @SuppressWarnings("unused")
 public abstract class Product implements Item {
 
-  private SimpleStringProperty productName = new SimpleStringProperty("");
-  private SimpleStringProperty manufacturer = new SimpleStringProperty("");
-  private SimpleStringProperty itemTypeCode = new SimpleStringProperty("");
+  private String productName = "";
+  private String manufacturer = "";
+  private String itemTypeCode = "";
+  private ItemType itemType;
 
   private int id;
-  private String itemType;
 
   public Product() {
-    this("", "", "");
+    this("", "", ItemType.AUDIO);
   }
 
   /**
@@ -28,15 +26,15 @@ public abstract class Product implements Item {
    *
    * @param productName - product name
    * @param manufacturer - manufacturer
-   * @param itemTypeCode - item type code
+   * @param itemType - item type
    */
-  public Product(String productName, String manufacturer, String itemTypeCode) {
+  public Product(String productName, String manufacturer, ItemType itemType) {
     //set Product Name, Manufacturer, and itemType
     setProductName(productName);
     setManufacturer(manufacturer);
-    setItemTypeCode(itemTypeCode);
+    setItemType(itemType);
+    setItemTypeCode(itemType.getCode());
   }
-
   /**
    * Overridden toString() method, which prints the name, manufacturer, type of the Product object.
    *
@@ -45,8 +43,7 @@ public abstract class Product implements Item {
   @Override
   public String toString() {
     return "Name: " + productName + "\n"
-        + "Manufacturer: " + manufacturer + "\n"
-        + "Type: " + itemTypeCode;
+        + "Manufacturer: " + manufacturer + "\n";
   }
 
   public int getId() {
@@ -54,55 +51,42 @@ public abstract class Product implements Item {
     return id;
   }
 
-  public String getProductName() {
-    return productName.get();
-  }
-
-  public SimpleStringProperty productNameProperty() {
-    return productName;
-  }
-
-  public void setProductName(String productName) {
-    this.productName.set(productName);
-  }
-
-  public String getManufacturer() {
-    return manufacturer.get();
-  }
-
-  public SimpleStringProperty manufacturerProperty() {
-    return manufacturer;
-  }
-
-  public void setManufacturer(String manufacturer) {
-    this.manufacturer.set(manufacturer);
-  }
-
-  public String getItemTypeCode() {
-    return itemTypeCode.get();
-  }
-
-  public SimpleStringProperty itemTypeProperty() {
-    return itemTypeCode;
-  }
-
-  public void setItemTypeCode(String itemTypeCode) {
-    this.itemTypeCode.set(itemTypeCode);
-  }
-
-  public final SimpleStringProperty valueProperty() {
-    return this.productName;
-  }
-
-  public final String getValue() {
-    return this.valueProperty().get();
-  }
-
-  public String getItemType() {
+  public ItemType getItemType() {
     return itemType;
   }
 
-  void setItemType(String itemType) {
+  public void setItemType(ItemType itemType) {
     this.itemType = itemType;
   }
+
+  @Override
+  public String getProductName() {
+    return productName;
+  }
+
+  @Override
+  public void setProductName(String productName) {
+    this.productName = productName;
+  }
+
+  @Override
+  public String getManufacturer() {
+    return manufacturer;
+  }
+
+  @Override
+  public void setManufacturer(String manufacturer) {
+    this.manufacturer = manufacturer;
+  }
+
+
+  public String getItemTypeCode() {
+    return itemTypeCode;
+  }
+
+
+  public void setItemTypeCode(String itemTypeCode) {
+    this.itemTypeCode = itemTypeCode;
+  }
+
 }
