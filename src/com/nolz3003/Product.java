@@ -3,9 +3,8 @@ package com.nolz3003;
 /**
  * The Product class.
  *
- * @author Austin Nolz
- *
- *      The Product class holds the data for each product added to the Existing Product table.
+ * @author Austin Nolz - The Product class holds the data for each product added to the
+ *      Existing Product table.
  */
 @SuppressWarnings("unused")
 public abstract class Product implements Item {
@@ -35,6 +34,7 @@ public abstract class Product implements Item {
     setItemType(itemType);
     setItemTypeCode(itemType.getCode());
   }
+
   /**
    * Overridden toString() method, which prints the name, manufacturer, type of the Product object.
    *

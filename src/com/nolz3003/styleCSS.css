@@ -153,7 +153,7 @@
 
 }
 
-.combo-box .text-field:hover{
+.combo-box .text-field:hover {
   -fx-background-color: linear-gradient(#0047AB, #50c878);
 
 }
@@ -170,10 +170,10 @@
 }
 
 /*.combo-box:focused {*/
-  /*-fx-background-color: linear-gradient(#0047AB, #50c878);*/
-  /*-fx-text-fill: black;*/
-  /*-fx-border-color: gold;*/
-  /*-fx-border-radius: 5;*/
+/*-fx-background-color: linear-gradient(#0047AB, #50c878);*/
+/*-fx-text-fill: black;*/
+/*-fx-border-color: gold;*/
+/*-fx-border-radius: 5;*/
 /*}*/
 
 .button {

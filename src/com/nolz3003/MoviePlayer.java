@@ -3,10 +3,8 @@ package com.nolz3003;
 /**
  * The MoviePlayer class.
  *
- * @author austinnolz
- *
- * The MoviePlayer class builds a product object that holds specific data about a movie player and
- * implement the MultimediaControl interface.
+ * @author austinnolz - The MoviePlayer class builds a product object that holds specific data
+ *     about a movie player and implement the MultimediaControl interface.
  */
 public class MoviePlayer extends Product implements MultimediaControl {
 

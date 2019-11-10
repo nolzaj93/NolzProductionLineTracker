@@ -21,8 +21,8 @@ import javafx.scene.control.TextField;
  * The Controller class which observes the menu.fxml view.
  *
  * @author Austin Nolz The Controller class listens for user events and updates the view using the
- * Product class. This Controller contains methods to initialize the database, initialize comboBox
- * members, add new products to a database, and display that data to a TableView.
+ *     Product class. This Controller contains methods to initialize the database, initialize
+ *     comboBox members, add new products to a database, and display that data to a TableView.
  */
 public class Controller {
 
@@ -75,7 +75,7 @@ public class Controller {
    */
   public void initialize() {
     // test constructor used when creating production records from user interface
-    Integer numProduced = 3;  // this will come from the combobox in the UI
+    int numProduced = 3;  // this will come from the combobox in the UI
 
     for (int productionRunProduct = 0; productionRunProduct < numProduced; productionRunProduct++) {
       ProductionRecord pr = new ProductionRecord(0);
@@ -93,7 +93,6 @@ public class Controller {
     pr.setSerialNum("2");
     pr.setProdDate(new Date());
     pLogTextArea.appendText(pr.toString());
-
 
     //Display the production record in the TextArea on the Production Log tab.
 
@@ -194,9 +193,10 @@ public class Controller {
       String enteredProductName = productNameField.getText();
 
       for (Product product : existingProducts) {
-        if (product.getProductName().equals(enteredProductName))
+        if (product.getProductName().equals(enteredProductName)) {
           //Set Error message visible (Product already exists)
           return;
+        }
 
       }
       String addProductString = "INSERT INTO PRODUCT(NAME, MANUFACTURER, TYPE) VALUES (?,?,?)";
@@ -224,6 +224,7 @@ public class Controller {
           it = ItemType.VISUALMOBILE;
           break;
         default:
+          it = ItemType.AUDIO;
           break;
       }
       // Show 1 as the default value.
@@ -255,7 +256,7 @@ public class Controller {
    * This method populates the TableView with the updated data from the database.
    *
    * @param rs - The result set returned from the query returns the name, manufacturer and type for
-   * each row.
+   *     each row.
    */
   private void populateExistingProducts(ResultSet rs) {
 
@@ -272,7 +273,7 @@ public class Controller {
         String manufacturer = row.get(1);
         String itemType = row.get(2);
         ItemType it = null;
-        switch(itemType) {
+        switch (itemType) {
           case "AU":
             it = ItemType.AUDIO;
             break;
@@ -286,16 +287,13 @@ public class Controller {
             it = ItemType.VISUALMOBILE;
             break;
           default:
+            it = ItemType.AUDIO;
             break;
         }
 
         existingProducts.add(new Widget(productName, manufacturer, it));
         System.out.println("Row added " + row);
       }
-
-//      if (existingProducts.isEmpty()) {
-//        existingProducts.add(new Widget("", "", null));
-//      }
 
     } catch (SQLException ex) {
       ex.printStackTrace();

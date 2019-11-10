@@ -10,9 +10,7 @@ import javafx.stage.Stage;
 /**
  * NolzProductionLineTracker class.
  *
- * @author austinnolz
- *
- *      The driver class of the application containing main and the start method.
+ * @author austinnolz - The driver class of the application containing main and the start method.
  */
 public class NolzProductionLineTracker extends Application {
 
@@ -40,6 +38,11 @@ public class NolzProductionLineTracker extends Application {
     //primaryStage.show();
   }
 
+  /**
+   * Main method.
+   *
+   * @param args - String array arguments
+   */
   public static void main(String[] args) {
 
     Product productProduced = new Widget("iPod", "Apple", ItemType.AUDIO);

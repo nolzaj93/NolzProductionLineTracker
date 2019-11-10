@@ -17,19 +17,11 @@ public enum ItemType {
     this.code = code;
   }
 
-  void setItemTypeCode(String code) {
-    this.code = code;
-  }
-
   public String getItemTypeCode() {
     return this.code;
   }
 
   public String getCode() {
     return code;
-  }
-
-  public void setCode(String code) {
-    this.code = code;
   }
 }
