@@ -39,7 +39,6 @@ public class ProductionRecord {
         .format("%05d", productionTypeCount);
     setSerialNum(serial);
 
-
   }
 
   /**
@@ -58,7 +57,7 @@ public class ProductionRecord {
     this.productID = productID;
     this.productionNum = productionNum;
     this.serialNum = serialNum;
-    this.prodDate = new Date(prodDate.getTime());
+    this.prodDate = new Date();
 
   }
 
@@ -87,7 +86,7 @@ public class ProductionRecord {
   }
 
   public Date getProdDate() {
-    return new Date(prodDate.getTime());
+    return new Date();
   }
 
   public void setProdDate(Date prodDate) {
