@@ -38,6 +38,7 @@ public class ProductionRecord {
     String serial = product.getManufacturer().substring(0, 3) + product.getItemTypeCode() + String
         .format("%05d", productionTypeCount);
     setSerialNum(serial);
+    setProdDate(new Date());
 
   }
 
@@ -57,7 +58,7 @@ public class ProductionRecord {
     this.productID = productID;
     this.productionNum = productionNum;
     this.serialNum = serialNum;
-    this.prodDate = new Date();
+    this.prodDate = new Date(prodDate.getTime());
 
   }
 
@@ -86,7 +87,7 @@ public class ProductionRecord {
   }
 
   public Date getProdDate() {
-    return new Date();
+    return new Date(prodDate.getTime());
   }
 
   public void setProdDate(Date prodDate) {
