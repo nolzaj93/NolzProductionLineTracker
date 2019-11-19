@@ -13,6 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -48,6 +49,11 @@ public class Controller {
 
   @FXML
   private TextArea pLogTextArea;
+
+  @FXML
+  private ListView productListView;
+
+  private ObservableList<Product> productLine;
 
   private ObservableList<Product> existingProducts;
 
@@ -134,6 +140,10 @@ public class Controller {
 
     // Show 1 as the default value.
     quantity.getSelectionModel().selectFirst();
+
+    //Populate ListView
+    productListView.setItems(existingProducts);
+
   }
 
   /**
@@ -197,10 +207,10 @@ public class Controller {
           //Set Error message visible (Product already exists)
           return;
         }
-
       }
-      String addProductString = "INSERT INTO PRODUCT(NAME, MANUFACTURER, TYPE) VALUES (?,?,?)";
 
+      String addProductString = "INSERT INTO PRODUCT(NAME, MANUFACTURER, TYPE) VALUES (?,?,?)";
+      productNameField.clear();
       String enteredManufacturer = manufacturerField.getText();
       manufacturerField.clear();
       String enteredItemType = itemTypeChoice.getValue();

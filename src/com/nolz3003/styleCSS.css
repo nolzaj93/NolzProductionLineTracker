@@ -15,8 +15,20 @@
   -fx-text-fill: white;
 }
 
-.list-view {
+.list-view .list-cell {
   -fx-background-color: linear-gradient(black, #3c3c3c);
+  -fx-border-color: linear-gradient(black, #3c3c3c);
+  -fx-text-fill: white;
+  -fx-alignment: CENTER_LEFT;
+  -fx-border-radius: 5;
+}
+
+.list-view .list-cell:selected {
+  -fx-background-color: linear-gradient(#0047AB, #50c878);
+}
+
+.list-view .list-cell:hover {
+  -fx-background-color: linear-gradient(#0047AB, #50c878);
 }
 
 .text-area {
@@ -103,11 +115,6 @@
   -fx-alignment: CENTER_LEFT;
 }
 
-.table-view {
-  -fx-border-radius: 20;
-  -fx-border-color: gold;
-}
-
 .table-view:focused {
   -fx-focus-color: transparent;
 }
@@ -121,6 +128,10 @@
 }
 
 .table-view .table-row-cell:selected {
+  -fx-background-color: linear-gradient(#0047AB, #50c878);
+}
+
+.table-view .table-row-cell:hover {
   -fx-background-color: linear-gradient(#0047AB, #50c878);
 }
 

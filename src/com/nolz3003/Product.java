@@ -43,7 +43,8 @@ public abstract class Product implements Item {
   @Override
   public String toString() {
     return "Name: " + productName + "\n"
-        + "Manufacturer: " + manufacturer + "\n";
+        + "Manufacturer: " + manufacturer + "\n"
+        + "Item Type: "+ itemType.name() + "\n";
   }
 
   public int getId() {
