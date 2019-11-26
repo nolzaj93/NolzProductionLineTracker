@@ -73,8 +73,8 @@
           <Label layoutX="27.0" layoutY="14.0" prefHeight="17.0" prefWidth="105.0" text="Choose Product" AnchorPane.leftAnchor="27.0" AnchorPane.topAnchor="14.0" />
           <ListView fx:id="productListView" layoutX="27.0" layoutY="38.0" prefHeight="411.0" prefWidth="414.0" AnchorPane.bottomAnchor="17.0" AnchorPane.leftAnchor="27.0" AnchorPane.rightAnchor="209.0" AnchorPane.topAnchor="38.0" />
           <Label layoutX="470.0" layoutY="14.0" text="Choose Quantity" AnchorPane.rightAnchor="77.0" AnchorPane.topAnchor="14.0" />
-          <ComboBox fx:id="quantity" layoutX="467.0" layoutY="38.0" prefHeight="27.0" prefWidth="149.0" AnchorPane.rightAnchor="34.0" AnchorPane.topAnchor="38.0" />
-          <Button layoutX="467.0" layoutY="77.0" mnemonicParsing="false" prefHeight="49.0" prefWidth="149.0" text="Record Production" AnchorPane.rightAnchor="34.0" AnchorPane.topAnchor="77.0" />
+          <ComboBox fx:id="quantityCombo" layoutX="467.0" layoutY="38.0" prefHeight="27.0" prefWidth="149.0" AnchorPane.rightAnchor="34.0" AnchorPane.topAnchor="38.0" />
+          <Button fx:id="recordBtn" layoutX="467.0" layoutY="77.0" mnemonicParsing="false" prefHeight="49.0" prefWidth="149.0" text="Record Production" AnchorPane.rightAnchor="34.0" AnchorPane.topAnchor="77.0" />
         </AnchorPane>
       </Tab>
       <Tab text="Production Log">

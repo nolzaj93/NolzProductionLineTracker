@@ -1,5 +1,7 @@
 package com.nolz3003;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -8,12 +10,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Properties;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -42,7 +47,7 @@ public class Controller {
   private TableView<Product> existingProductsTable = new TableView<>();
 
   @FXML
-  private ComboBox<String> quantity;
+  private ComboBox<Integer> quantityCombo;
 
   @FXML
   private Statement stmt;
@@ -53,16 +58,18 @@ public class Controller {
   @FXML
   private ListView productListView;
 
+  @FXML
+  private Button recordBtn;
+
   private ObservableList<Product> productLine;
 
   private ObservableList<Product> existingProducts;
 
   private static final String JDBC_DRIVER = "org.h2.Driver";
   private static final String DB_URL = "jdbc:h2:./res/HR";
-
   //  Database credentials
   private static final String USER = "";
-  private static final String PASS = "";
+  private static  String PASS = "";
 
   private String itemTypeCode = null;
 
@@ -80,29 +87,21 @@ public class Controller {
    * This method is called by default because this Controller class implements Initializable.
    */
   public void initialize() {
-    // test constructor used when creating production records from user interface
-    int numProduced = 3;  // this will come from the combobox in the UI
 
-    for (int productionRunProduct = 0; productionRunProduct < numProduced; productionRunProduct++) {
-      ProductionRecord pr = new ProductionRecord(0);
-
-      pLogTextArea.appendText(pr.toString());
-
-    }
-
-    // test constructor used when creating production records from reading database
-    ProductionRecord pr = new ProductionRecord(0, 3, "1", new Date());
-
-    // testing accessors and mutators
-    pr.setProductionNum(1);
-    pr.setProductID(4);
-    pr.setSerialNum("2");
-    pr.setProdDate(new Date());
-    pLogTextArea.appendText(pr.toString());
+    // Load counts of productionRecord and serial numbers of each type.
 
     //Display the production record in the TextArea on the Production Log tab.
 
-    testMultimedia();
+    // Credit: http://tutorials.jenkov.com/javafx/listview.html
+    //  listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    productListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+    recordBtn.setOnAction(event -> {
+      ObservableList<Product> selectedProducts = productListView.getSelectionModel().getSelectedItems();
+
+      recordProduction(selectedProducts);
+
+    });
 
     initializeDB();
 
@@ -111,9 +110,9 @@ public class Controller {
 
     // Populates the comboBox named quantity with numbers 1-10
     for (int count = 1; count <= 10; count++) {
-      quantity.getItems().add(Integer.toString(count));
+      quantityCombo.getItems().add(count);
     }
-    String sql = "SELECT NAME,MANUFACTURER,TYPE FROM PRODUCT";
+    String sql = "SELECT ID,NAME,MANUFACTURER,TYPE FROM PRODUCT";
 
     try {
       stmt = conn.createStatement();
@@ -135,11 +134,11 @@ public class Controller {
     } catch (Exception ex) {
       ex.printStackTrace();
     }
-    //Allows the user to add an entry
-    quantity.setEditable(true);
+    //Allows the user to add an entry.
+    quantityCombo.setEditable(true);
 
     // Show 1 as the default value.
-    quantity.getSelectionModel().selectFirst();
+    quantityCombo.getSelectionModel().selectFirst();
 
     //Populate ListView
     productListView.setItems(existingProducts);
@@ -169,6 +168,15 @@ public class Controller {
 
     conn = null;
 
+    try {
+      Properties prop = new Properties();
+      prop.load(new FileInputStream("res/properties"));
+      PASS = prop.getProperty("password");
+
+    } catch (IOException ex) {
+      ex.printStackTrace();
+    }
+
     //Exact same for every database
     //Result set looks like the database table
     try {
@@ -189,6 +197,7 @@ public class Controller {
 
       e.printStackTrace();
     }
+
   }
 
   /**
@@ -251,7 +260,7 @@ public class Controller {
         addProduct.setString(3, itemTypeCode);
 
         addProduct.executeUpdate();
-        existingProducts.add(new Widget(enteredProductName, enteredManufacturer, it));
+        existingProducts.add(new Widget((productLine.size()+1),enteredProductName, enteredManufacturer, it));
 
         addProduct.close();
 
@@ -275,14 +284,14 @@ public class Controller {
       while (rs.next()) {
         //Iterate Row
         ObservableList<String> row = FXCollections.observableArrayList();
-        for (int count = 1; count <= 3; count++) {
+        for (int count = 1; count <= 4; count++) {
           row.add(rs.getString(count));
         }
-
-        String productName = row.get(0);
-        String manufacturer = row.get(1);
-        String itemType = row.get(2);
-        ItemType it = null;
+        int id = Integer.parseInt(row.get(0));
+        String productName = row.get(1);
+        String manufacturer = row.get(2);
+        String itemType = row.get(3);
+        ItemType it;
         switch (itemType) {
           case "AU":
             it = ItemType.AUDIO;
@@ -301,7 +310,7 @@ public class Controller {
             break;
         }
 
-        existingProducts.add(new Widget(productName, manufacturer, it));
+        existingProducts.add(new Widget(id, productName, manufacturer, it));
         System.out.println("Row added " + row);
       }
 
@@ -315,7 +324,7 @@ public class Controller {
    */
   private static void testMultimedia() {
 
-    AudioPlayer newAudioProduct = new AudioPlayer("DP-X1A", "Onkyo",
+    AudioPlayer newAudioProduct = new AudioPlayer(1,"DP-X1A", "Onkyo",
 
         "DSD/FLAC/ALAC/WAV/AIFF/MQA/Ogg-Vorbis/MP3/AAC",
         "M3U/PLS/WPL");
@@ -342,6 +351,27 @@ public class Controller {
       p.next();
 
       p.previous();
+
+    }
+  }
+
+  public void recordProduction(ObservableList<Product> selectedProducts){
+
+    // Utilize a for loop which iterates until the number taken from the quantity ComboBox is reached
+    // On each iteration construct a ProductionRecord object
+    // --Call toString for each object and append the text to the pLogTextArea
+    // --Add row to database for each iteration
+
+    for(Product selectedProduct : selectedProducts){
+
+      // Create and Add ProductionRecord objects from database ResultSet to the pLogTextArea
+
+      int productQuantity = quantityCombo.getValue();
+      for(int productCount = 0; productCount < productQuantity; productCount++) {
+        ProductionRecord currentRecord = new ProductionRecord(selectedProduct, ProductionRecord.getCurrentProdNum(), new Date());
+
+        pLogTextArea.appendText(currentRecord.toString());
+      }
 
     }
   }

@@ -17,22 +17,24 @@ public abstract class Product implements Item {
   private int id;
 
   public Product() {
-    this("", "", ItemType.AUDIO);
+    this(0,"", "", ItemType.AUDIO);
   }
 
   /**
    * Constructor for the Product class.
    *
+   * @param productID - productID number
    * @param productName - product name
    * @param manufacturer - manufacturer
    * @param itemType - item type
    */
-  public Product(String productName, String manufacturer, ItemType itemType) {
+  public Product(int productID, String productName, String manufacturer, ItemType itemType) {
     //set Product Name, Manufacturer, and itemType
     setProductName(productName);
     setManufacturer(manufacturer);
     setItemType(itemType);
     setItemTypeCode(itemType.getCode());
+
   }
 
   /**
@@ -45,6 +47,10 @@ public abstract class Product implements Item {
     return "Name: " + productName + "\n"
         + "Manufacturer: " + manufacturer + "\n"
         + "Item Type: "+ itemType.name() + "\n";
+  }
+
+  public void setId(int productID){
+    this.id = productID;
   }
 
   public int getId() {

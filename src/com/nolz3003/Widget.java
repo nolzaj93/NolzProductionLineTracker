@@ -8,7 +8,7 @@ package com.nolz3003;
  */
 public class Widget extends Product {
 
-  public Widget(String prodName, String manufacturer, ItemType itemType) {
-    super(prodName, manufacturer, itemType);
+  public Widget(int productID, String prodName, String manufacturer, ItemType itemType) {
+    super(productID, prodName, manufacturer, itemType);
   }
 }
