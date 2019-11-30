@@ -1,5 +1,6 @@
 package com.nolz3003;
 
+import java.util.Scanner;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -42,18 +43,13 @@ public class NolzProductionLineTracker extends Application {
    * @param args - String array arguments
    */
   public static void main(String[] args) {
-
-
-
-//    // test constructor used when creating production records from user interface
-//    int numProduced = 3;  // this will come from the combobox in the UI
-//    int itemCount = 0;
-//
-//    for (int productionRunProduct = 0; productionRunProduct < numProduced; productionRunProduct++) {
-//      ProductionRecord pr = new ProductionRecord(productProduced, itemCount++);
-//      // using the iterator as the product id for testing
-//      System.out.println(pr.toString());
-//    }
+    Scanner scan = new Scanner(System.in);
+    System.out.println("Enter Employee Name (first last)\n");
+    String name = scan.nextLine();
+    System.out.println("Enter Employee password");
+    String password = scan.nextLine();
+    Employee employee = new Employee(name, password);
+    System.out.println(employee);
 
     launch(args);
   }

@@ -10,11 +10,12 @@ import java.util.Date;
 public class ProductionRecord {
 
   private static int currentProdNum = 1;
-  private static int currentAUSerial = 0;
-  private static int currentVISerial = 0;
-  private static int currentAMSerial = 0;
-  private static int currentVMSerial = 0;
+  private static int currentAUSerial = 1;
+  private static int currentVISerial = 1;
+  private static int currentAMSerial = 1;
+  private static int currentVMSerial = 1;
 
+  private Product product;
   //Unique for every item produced auto incremented by DB
   private int productionNum;
 
@@ -25,18 +26,9 @@ public class ProductionRecord {
 
   private Date prodDate;
 
-  /**
-   * ProductionRecord constructor which accepts a Product object and a productionTypeCount.
-   *
-   * @param product - Product object.
-   * @param productionTypeCount - count of units produced of that type.
-   */
-  public ProductionRecord(Product product, int productionTypeCount) {
-    String serial = product.getManufacturer().substring(0, 3) + product.getItemTypeCode() + String
-        .format("%05d", productionTypeCount);
-    setSerialNum(serial);
-    setProdDate(new Date());
-
+  public ProductionRecord(Product product, int productionNum, String serialNum, Date prodDate){
+    this(product, productionNum, prodDate);
+    setSerialNum(serialNum);
   }
 
   /**
@@ -45,13 +37,12 @@ public class ProductionRecord {
    *
    * @param product - the product object
    * @param productionNum - unique item unit number
-   * number incremented for that type.
    * @param prodDate - Date the unit was produced.
    */
   public ProductionRecord(Product product, int productionNum,
       Date prodDate) {
-
-    this.productID = product.getId();
+    setProduct(product);
+    this.productID = product.getProductID();
     this.productionNum = productionNum;
     this.prodDate = prodDate;
 
@@ -60,22 +51,33 @@ public class ProductionRecord {
     String productType = product.getItemTypeCode();
     switch (productType) {
       case "AU":
-        setSerialNum(product.getManufacturer().substring(0, 3) + "AU" + currentAUSerial++);
-
+        setSerialNum(product.getManufacturer().substring(0, 3) + "AU" + String
+            .format("%05d", currentAUSerial++));
         break;
       case "VI":
-        setSerialNum(product.getManufacturer().substring(0, 3) + "VI" + currentVISerial++);
-
+        setSerialNum(product.getManufacturer().substring(0, 3) + "VI" + String
+            .format("%05d", currentVISerial++));
         break;
       case "AM":
-        setSerialNum(product.getManufacturer().substring(0, 3) + "AM" + currentAMSerial++);
-
+        setSerialNum(product.getManufacturer().substring(0, 3) + "AM" + String
+            .format("%05d", currentAMSerial++));
         break;
       case "VM":
-        setSerialNum(product.getManufacturer().substring(0, 3) + "VM" + currentVMSerial++);
-
+        setSerialNum(product.getManufacturer().substring(0, 3) + "VM" + String
+            .format("%05d", currentVMSerial++));
+        break;
+      default:
+        System.out.println("Error: invalid item type code.");
         break;
     }
+  }
+
+  public Product getProduct() {
+    return product;
+  }
+
+  public void setProduct(Product product) {
+    this.product = product;
   }
 
   public int getProductionNum() {
@@ -152,7 +154,7 @@ public class ProductionRecord {
 
   @Override
   public String toString() {
-    return "Prod. Num: " + getProductionNum() + " Product ID: " + getProductID()
+    return "Prod. Num: " + getProductionNum() + " Product ID: " + getProduct().getProductName()
         + " Serial Num: " + getSerialNum() + " Date: " + getProdDate() + "\n";
   }
 }

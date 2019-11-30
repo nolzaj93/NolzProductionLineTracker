@@ -52,7 +52,7 @@
       <DataType>INTEGER(10)|4s</DataType>
       <NotNull>1</NotNull>
       <SequenceIdentity>1</SequenceIdentity>
-      <DefaultExpression>(NEXT VALUE FOR PUBLIC.SYSTEM_SEQUENCE_BD3843D7_50ED_4A96_8357_5C4539BFAE94)</DefaultExpression>
+      <DefaultExpression>(NEXT VALUE FOR PUBLIC.SYSTEM_SEQUENCE_BFC857DE_7A5C_423D_96BA_C5AB6E8A13D4)</DefaultExpression>
     </column>
     <column id="15" parent="6" name="PRODUCT_ID">
       <Position>2</Position>

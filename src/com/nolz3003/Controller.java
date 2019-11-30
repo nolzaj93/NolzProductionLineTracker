@@ -1,6 +1,7 @@
 package com.nolz3003;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
@@ -27,12 +29,12 @@ import javafx.scene.control.TextField;
  * The Controller class which observes the menu.fxml view.
  *
  * @author Austin Nolz The Controller class listens for user events and updates the view using the
- *     Product class. This Controller contains methods to initialize the database, initialize
- *     comboBox members, add new products to a database, and display that data to a TableView.
+ * Product class. This Controller contains methods to initialize the database, initialize comboBox
+ * members, add new products to a database, and display that data to a TableView.
  */
 public class Controller {
 
-  private static Connection conn;
+  private Connection conn = null;
 
   @FXML
   private ChoiceBox<String> itemTypeChoice;
@@ -47,10 +49,10 @@ public class Controller {
   private TableView<Product> existingProductsTable = new TableView<>();
 
   @FXML
-  private ComboBox<Integer> quantityCombo;
+  private ComboBox<String> quantityCombo;
 
   @FXML
-  private Statement stmt;
+  private Statement stmt = null;
 
   @FXML
   private TextArea pLogTextArea;
@@ -63,13 +65,15 @@ public class Controller {
 
   private ObservableList<Product> productLine;
 
-  private ObservableList<Product> existingProducts;
+  private ArrayList<ProductionRecord> productionRun;
+
+  private ArrayList<ProductionRecord> productionLog;
 
   private static final String JDBC_DRIVER = "org.h2.Driver";
   private static final String DB_URL = "jdbc:h2:./res/HR";
   //  Database credentials
   private static final String USER = "";
-  private static  String PASS = "";
+  private static String PASS = "";
 
   private String itemTypeCode = null;
 
@@ -88,6 +92,10 @@ public class Controller {
    */
   public void initialize() {
 
+    testMultimedia();
+
+
+
     // Load counts of productionRecord and serial numbers of each type.
 
     //Display the production record in the TextArea on the Production Log tab.
@@ -97,28 +105,29 @@ public class Controller {
     productListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
     recordBtn.setOnAction(event -> {
-      ObservableList<Product> selectedProducts = productListView.getSelectionModel().getSelectedItems();
 
-      recordProduction(selectedProducts);
+        ObservableList<Product> selectedProducts = productListView.getSelectionModel()
+            .getSelectedItems();
 
+        recordProduction(selectedProducts);
     });
 
     initializeDB();
 
-    existingProducts = FXCollections.observableArrayList();
+    productLine = FXCollections.observableArrayList();
     // existingProductsTable = new TableView<>();
 
     // Populates the comboBox named quantity with numbers 1-10
     for (int count = 1; count <= 10; count++) {
-      quantityCombo.getItems().add(count);
+      quantityCombo.getItems().add(Integer.toString(count));
     }
     String sql = "SELECT ID,NAME,MANUFACTURER,TYPE FROM PRODUCT";
 
     try {
       stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery(sql);
-      populateExistingProducts(rs);
-      existingProductsTable.setItems(existingProducts);
+      loadProductList(rs);
+      existingProductsTable.setItems(productLine);
 
       rs.close();
     } catch (SQLException e) {
@@ -141,8 +150,12 @@ public class Controller {
     quantityCombo.getSelectionModel().selectFirst();
 
     //Populate ListView
-    productListView.setItems(existingProducts);
+    productListView.setItems(productLine);
 
+    //Load productionLog
+    productionLog = new ArrayList<>();
+    productionRun = new ArrayList<>();
+    loadProductionLog();
   }
 
   /**
@@ -166,8 +179,6 @@ public class Controller {
     // Right click on database, Diagrams, Open Visualization
     // Need a database diagram for the Production Line Project
 
-    conn = null;
-
     try {
       Properties prop = new Properties();
       prop.load(new FileInputStream("res/properties"));
@@ -189,9 +200,9 @@ public class Controller {
 
       conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
-      //STEP 3: Execute a query
-
       stmt = conn.createStatement();
+
+
 
     } catch (ClassNotFoundException | SQLException e) {
 
@@ -211,7 +222,7 @@ public class Controller {
 
       String enteredProductName = productNameField.getText();
 
-      for (Product product : existingProducts) {
+      for (Product product : productLine) {
         if (product.getProductName().equals(enteredProductName)) {
           //Set Error message visible (Product already exists)
           return;
@@ -224,7 +235,7 @@ public class Controller {
       manufacturerField.clear();
       String enteredItemType = itemTypeChoice.getValue();
 
-      ItemType it = null;
+      ItemType it;
       switch (enteredItemType) {
         case "AUDIO = AU":
           itemTypeCode = ItemType.AUDIO.getItemTypeCode();
@@ -260,7 +271,8 @@ public class Controller {
         addProduct.setString(3, itemTypeCode);
 
         addProduct.executeUpdate();
-        existingProducts.add(new Widget((productLine.size()+1),enteredProductName, enteredManufacturer, it));
+        productLine
+            .add(new Widget((productLine.size() + 1), enteredProductName, enteredManufacturer, it));
 
         addProduct.close();
 
@@ -275,22 +287,18 @@ public class Controller {
    * This method populates the TableView with the updated data from the database.
    *
    * @param rs - The result set returned from the query returns the name, manufacturer and type for
-   *     each row.
+   * each row.
    */
-  private void populateExistingProducts(ResultSet rs) {
+  private void loadProductList(ResultSet rs) {
 
     try {
 
       while (rs.next()) {
-        //Iterate Row
-        ObservableList<String> row = FXCollections.observableArrayList();
-        for (int count = 1; count <= 4; count++) {
-          row.add(rs.getString(count));
-        }
-        int id = Integer.parseInt(row.get(0));
-        String productName = row.get(1);
-        String manufacturer = row.get(2);
-        String itemType = row.get(3);
+
+        int id = rs.getInt(1);
+        String productName = rs.getString(2);
+        String manufacturer = rs.getString(3);
+        String itemType = rs.getString(4);
         ItemType it;
         switch (itemType) {
           case "AU":
@@ -310,8 +318,7 @@ public class Controller {
             break;
         }
 
-        existingProducts.add(new Widget(id, productName, manufacturer, it));
-        System.out.println("Row added " + row);
+        productLine.add(new Widget(id, productName, manufacturer, it));
       }
 
     } catch (SQLException ex) {
@@ -324,7 +331,7 @@ public class Controller {
    */
   private static void testMultimedia() {
 
-    AudioPlayer newAudioProduct = new AudioPlayer(1,"DP-X1A", "Onkyo",
+    AudioPlayer newAudioProduct = new AudioPlayer(1, "DP-X1A", "Onkyo",
 
         "DSD/FLAC/ALAC/WAV/AIFF/MQA/Ogg-Vorbis/MP3/AAC",
         "M3U/PLS/WPL");
@@ -355,24 +362,128 @@ public class Controller {
     }
   }
 
-  public void recordProduction(ObservableList<Product> selectedProducts){
+  /**
+   * The recordProduction() method creates an arraylist of type ProductionRecord
+   *
+   * @param selectedProducts - Products chosen from the productListView
+   */
+  public void recordProduction(ObservableList<Product> selectedProducts) {
 
-    // Utilize a for loop which iterates until the number taken from the quantity ComboBox is reached
-    // On each iteration construct a ProductionRecord object
-    // --Call toString for each object and append the text to the pLogTextArea
-    // --Add row to database for each iteration
+//    Record Production button should:
+//
+//    Get the selected product from the Product Line ListView and the quantity from the comboBox.
+//        Create an ArrayList of ProductionRecord objects named productionRun.
+//        Send the productionRun to an addToProductionDB method. (Tip: use a TimeStamp object for the date)
 
-    for(Product selectedProduct : selectedProducts){
+//    call loadProductionLog
+//    call showProduction
+
+//    From the initialize method call the loadProductionLog method which should:
+
+    productionRun.clear();
+    for (Product selectedProduct : selectedProducts) {
 
       // Create and Add ProductionRecord objects from database ResultSet to the pLogTextArea
 
-      int productQuantity = quantityCombo.getValue();
-      for(int productCount = 0; productCount < productQuantity; productCount++) {
-        ProductionRecord currentRecord = new ProductionRecord(selectedProduct, ProductionRecord.getCurrentProdNum(), new Date());
+      for (int productCount = 0; productCount < Integer.parseInt(quantityCombo.getValue()); productCount++) {
+        ProductionRecord currentRecord = new ProductionRecord(selectedProduct,
+            ProductionRecord.getCurrentProdNum(), new Timestamp(System.currentTimeMillis()));
 
-        pLogTextArea.appendText(currentRecord.toString());
+        productionRun.add(currentRecord);
       }
+    }
+    addToProductionDB();
+    loadProductionLog();
+  }
 
+  /**
+   *
+   */
+  public void loadProductionLog() {
+    pLogTextArea.clear();
+    productionLog.clear();
+
+
+//    Create ProductionRecord objects from the records in the ProductionRecord database table.
+
+    String sql = "SELECT PRODUCTION_NUM, PRODUCT_ID, SERIAL_NUM, DATE_PRODUCED FROM PRODUCTIONRECORD";
+    try {
+      Properties prop = new Properties();
+      prop.load(new FileInputStream("res/properties"));
+      PASS = prop.getProperty("password");
+      conn = DriverManager.getConnection(DB_URL, USER, PASS);
+      stmt = conn.createStatement();
+      ResultSet rs = stmt.executeQuery(sql);
+
+      while (rs.next()) {
+
+        int prodNum = rs.getInt(1);
+        int prodID = rs.getInt(2);
+        String serialNum = rs.getString(3);
+        Date prodDate = new Date(rs.getTimestamp(4).getTime());
+
+        ProductionRecord currentRecord = new ProductionRecord(productLine.get(prodID-1), prodNum,
+            serialNum, prodDate);
+
+        //    Populate the productionLog ArrayList
+        productionLog.add(currentRecord);
+      }
+      rs.close();
+
+    } catch (FileNotFoundException ex)  {
+      ex.printStackTrace();
+    } catch (IOException ex) {
+      ex.printStackTrace();
+    } catch (SQLException ex) {
+      ex.printStackTrace();
+    }
+//    call showProduction
+    showProduction();
+  }
+
+  /**
+   *
+   */
+  public void showProduction() {
+//    populate the TextArea on the Production Log tab with the information from the productionLog,
+//    replacing the productId with the product name, with one line for each product produced
+
+    for (ProductionRecord currentRecord : productionLog) {
+
+      pLogTextArea.appendText(currentRecord.toString());
+    }
+  }
+
+  /**
+   *
+   */
+  public void addToProductionDB() {
+
+//    The addToProductionDB method should:
+//
+//    Loop through the productionRun, inserting productionRecord object information into the ProductionRecord database table.
+    for (ProductionRecord record : productionRun) {
+
+      String addRecordString =
+          "INSERT INTO PRODUCTIONRECORD(PRODUCTION_NUM, PRODUCT_ID, SERIAL_NUM, DATE_PRODUCED) "
+              + "VALUES (?,?,?,?)";
+      PreparedStatement addRecord;
+
+      try {
+
+        addRecord = conn.prepareStatement(addRecordString);
+
+        addRecord.setInt(1, record.getProductionNum());
+        addRecord.setInt(2, record.getProductID());
+        addRecord.setString(3, record.getSerialNum());
+        addRecord.setTimestamp(4, new Timestamp(record.getProdDate().getTime()));
+        addRecord.executeUpdate();
+
+        addRecord.close();
+      } catch (SQLException ex) {
+
+        ex.printStackTrace();
+      }
     }
   }
 }

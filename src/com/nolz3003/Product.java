@@ -14,7 +14,10 @@ public abstract class Product implements Item {
   private String itemTypeCode = "";
   private ItemType itemType;
 
-  private int id;
+
+
+  private int productID;
+
 
   public Product() {
     this(0,"", "", ItemType.AUDIO);
@@ -30,6 +33,7 @@ public abstract class Product implements Item {
    */
   public Product(int productID, String productName, String manufacturer, ItemType itemType) {
     //set Product Name, Manufacturer, and itemType
+    setProductID(productID);
     setProductName(productName);
     setManufacturer(manufacturer);
     setItemType(itemType);
@@ -49,13 +53,12 @@ public abstract class Product implements Item {
         + "Item Type: "+ itemType.name() + "\n";
   }
 
-  public void setId(int productID){
-    this.id = productID;
+  public int getProductID() {
+    return productID;
   }
 
-  public int getId() {
-
-    return id;
+  public void setProductID(int productID) {
+    this.productID = productID;
   }
 
   public ItemType getItemType() {
