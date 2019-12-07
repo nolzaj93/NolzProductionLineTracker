@@ -19,6 +19,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableView;
@@ -63,6 +64,9 @@ public class Controller {
   @FXML
   private Button recordBtn;
 
+  @FXML
+  private Label errorLabel;
+
   private ObservableList<Product> productLine;
 
   private ArrayList<ProductionRecord> productionRun;
@@ -94,22 +98,21 @@ public class Controller {
 
     testMultimedia();
 
-
-
     // Load counts of productionRecord and serial numbers of each type.
 
     //Display the production record in the TextArea on the Production Log tab.
 
     // Credit: http://tutorials.jenkov.com/javafx/listview.html
     //  listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-    productListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
     recordBtn.setOnAction(event -> {
 
-        ObservableList<Product> selectedProducts = productListView.getSelectionModel()
-            .getSelectedItems();
+      ObservableList<Product> selectedProducts = productListView.getSelectionModel()
+          .getSelectedItems();
 
+      if(selectedProducts != null) {
         recordProduction(selectedProducts);
+      }
     });
 
     initializeDB();
@@ -201,7 +204,6 @@ public class Controller {
       conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
       stmt = conn.createStatement();
-
 
 
     } catch (ClassNotFoundException | SQLException e) {
@@ -367,7 +369,8 @@ public class Controller {
    *
    * @param selectedProducts - Products chosen from the productListView
    */
-  public void recordProduction(ObservableList<Product> selectedProducts) {
+  public void recordProduction(ObservableList<Product> selectedProducts)
+      throws NumberFormatException {
 
 //    Record Production button should:
 //
@@ -381,11 +384,24 @@ public class Controller {
 //    From the initialize method call the loadProductionLog method which should:
 
     productionRun.clear();
+
+    String quantityString = quantityCombo.getValue();
+    try {
+      Integer.parseInt(quantityString);
+    } catch (NumberFormatException e) {
+
+      errorLabel.setText("Please enter a number into the text box.");
+      errorLabel.setVisible(true);
+      quantityCombo.setValue("1");
+      return;
+    }
+
+    int quantity = Integer.parseInt(quantityCombo.getValue());
     for (Product selectedProduct : selectedProducts) {
 
       // Create and Add ProductionRecord objects from database ResultSet to the pLogTextArea
 
-      for (int productCount = 0; productCount < Integer.parseInt(quantityCombo.getValue()); productCount++) {
+      for (int productCount = 0; productCount < quantity; productCount++) {
         ProductionRecord currentRecord = new ProductionRecord(selectedProduct,
             ProductionRecord.getCurrentProdNum(), new Timestamp(System.currentTimeMillis()));
 
@@ -393,15 +409,13 @@ public class Controller {
       }
     }
     addToProductionDB();
-    loadProductionLog();
+    showProductionRun();
   }
 
   /**
    *
    */
   public void loadProductionLog() {
-    pLogTextArea.clear();
-    productionLog.clear();
 
 
 //    Create ProductionRecord objects from the records in the ProductionRecord database table.
@@ -422,7 +436,7 @@ public class Controller {
         String serialNum = rs.getString(3);
         Date prodDate = new Date(rs.getTimestamp(4).getTime());
 
-        ProductionRecord currentRecord = new ProductionRecord(productLine.get(prodID-1), prodNum,
+        ProductionRecord currentRecord = new ProductionRecord(productLine.get(prodID - 1), prodNum,
             serialNum, prodDate);
 
         //    Populate the productionLog ArrayList
@@ -430,7 +444,7 @@ public class Controller {
       }
       rs.close();
 
-    } catch (FileNotFoundException ex)  {
+    } catch (FileNotFoundException ex) {
       ex.printStackTrace();
     } catch (IOException ex) {
       ex.printStackTrace();
@@ -438,14 +452,27 @@ public class Controller {
       ex.printStackTrace();
     }
 //    call showProduction
-    showProduction();
+    showProductionLog();
   }
 
   /**
    *
    */
-  public void showProduction() {
-//    populate the TextArea on the Production Log tab with the information from the productionLog,
+  public void showProductionRun() {
+//    populate the TextArea on the Production Log tab with the information from the productionRun,
+//    replacing the productId with the product name, with one line for each product produced
+
+    for (ProductionRecord currentRecord : productionRun) {
+
+      pLogTextArea.appendText(currentRecord.toString());
+    }
+  }
+
+  /**
+   *
+   */
+  public void showProductionLog() {
+//    populate the TextArea on the Production Log tab with the information from the productionRun,
 //    replacing the productId with the product name, with one line for each product produced
 
     for (ProductionRecord currentRecord : productionLog) {
