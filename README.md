@@ -62,7 +62,7 @@ SOFTWARE.
 
 
 ## Acknowledgments
-- Professor Vanselow's course website made OOP enjoyable to learn.
+- Professor Vanselow's instruction and course website made OOP enjoyable to learn.
 
 ## History
 
