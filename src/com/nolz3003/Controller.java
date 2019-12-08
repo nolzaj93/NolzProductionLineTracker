@@ -94,7 +94,7 @@ public class Controller {
 
   /**
    * This method is called by default because this Controller class implements Initializable.
-   * @throws IOException
+   * @throws IOException - related to input/output operations.
    */
   public void initialize() throws IOException {
 
