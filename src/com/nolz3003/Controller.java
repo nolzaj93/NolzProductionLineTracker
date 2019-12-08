@@ -94,6 +94,7 @@ public class Controller {
 
   /**
    * This method is called by default because this Controller class implements Initializable.
+   * @throws IOException
    */
   public void initialize() throws IOException {
 
@@ -516,6 +517,7 @@ public class Controller {
    * The reverseString method reverses strings.
    *
    * @param id - string to be reversed.
+   * @return - returns the reversed string
    */
   public String reverseString(String id) {
     // Paste the code for your reverseString method here.
