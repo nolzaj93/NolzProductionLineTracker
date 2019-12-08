@@ -2,6 +2,8 @@ package com.nolz3003;
 
 /**
  * The PlayerDriver class is for testing with the testPlayer() method.
+ *
+ * @author austinnolz
  */
 public class PlayerDriver {
 

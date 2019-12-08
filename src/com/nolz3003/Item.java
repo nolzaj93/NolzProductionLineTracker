@@ -3,6 +3,8 @@ package com.nolz3003;
 /**
  * The Item interface is implemented by the Product class to ensure all the methods below are
  * included after the Product class.
+ *
+ * @author austinnolz
  */
 public interface Item {
 

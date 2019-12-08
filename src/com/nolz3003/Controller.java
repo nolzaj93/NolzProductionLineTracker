@@ -21,7 +21,6 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -29,7 +28,7 @@ import javafx.scene.control.TextField;
 /**
  * The Controller class which observes the menu.fxml view.
  *
- * @author Austin Nolz The Controller class listens for user events and updates the view using the
+ * @author Austin Nolz - The Controller class listens for user events and updates the view using the
  * Product class. This Controller contains methods to initialize the database, initialize comboBox
  * members, add new products to a database, and display that data to a TableView.
  */
@@ -59,13 +58,25 @@ public class Controller {
   private TextArea pLogTextArea;
 
   @FXML
-  private ListView productListView;
+  private ListView<Product> productListView;
 
   @FXML
   private Button recordBtn;
 
   @FXML
   private Label errorLabel;
+
+  @FXML
+  private TextField nameField;
+
+  @FXML
+  private TextField pwField;
+
+  @FXML
+  private TextArea employeeTA;
+
+  @FXML
+  private Label returnMsg;
 
   private ObservableList<Product> productLine;
 
@@ -81,20 +92,10 @@ public class Controller {
 
   private String itemTypeCode = null;
 
-  /*
-   * Credit for the editable cell implementation goes to James_D on StackOverflow
-   * https://stackoverflow.com/questions/28414825/make-individual-cell-editable-in-javafx-tableview
-   *
-   * private PseudoClass editableCssClass = PseudoClass.getPseudoClass("editable");
-   * private Callback<TableColumn<Widget, String>,
-   * TableCell<Widget, String>> defaultTextFieldCellFactory
-   *   = TextFieldTableCell.forTableColumn();
-   */
-
   /**
    * This method is called by default because this Controller class implements Initializable.
    */
-  public void initialize() {
+  public void initialize() throws IOException {
 
     testMultimedia();
 
@@ -110,7 +111,7 @@ public class Controller {
       ObservableList<Product> selectedProducts = productListView.getSelectionModel()
           .getSelectedItems();
 
-      if(selectedProducts != null) {
+      if (selectedProducts != null) {
         recordProduction(selectedProducts);
       }
     });
@@ -158,7 +159,10 @@ public class Controller {
     //Load productionLog
     productionLog = new ArrayList<>();
     productionRun = new ArrayList<>();
-    loadProductionLog();
+
+    if (!productLine.isEmpty()) {
+      loadProductionLog();
+    }
   }
 
   /**
@@ -176,16 +180,20 @@ public class Controller {
   /**
    * This method makes an attempt to connect to the H2 local database.
    */
-  private void initializeDB() {
+  private void initializeDB() throws IOException {
     // intelliJ must be disconnected from the database in order for program to connect
     // Hit the red square to stop intelliJ connection to database before running the program
     // Right click on database, Diagrams, Open Visualization
     // Need a database diagram for the Production Line Project
 
+    FileInputStream stream = null;
     try {
       Properties prop = new Properties();
-      prop.load(new FileInputStream("res/properties"));
-      PASS = prop.getProperty("password");
+      stream = new FileInputStream("res/properties");
+      prop.load(stream);
+      PASS = reverseString(prop.getProperty("password"));
+      stream.close();
+
 
     } catch (IOException ex) {
       ex.printStackTrace();
@@ -365,23 +373,12 @@ public class Controller {
   }
 
   /**
-   * The recordProduction() method creates an arraylist of type ProductionRecord
+   * The recordProduction() method creates an arraylist of type ProductionRecord.
    *
-   * @param selectedProducts - Products chosen from the productListView
+   * @param selectedProducts - Products chosen from the productListView.
    */
-  public void recordProduction(ObservableList<Product> selectedProducts)
+  private void recordProduction(ObservableList<Product> selectedProducts)
       throws NumberFormatException {
-
-//    Record Production button should:
-//
-//    Get the selected product from the Product Line ListView and the quantity from the comboBox.
-//        Create an ArrayList of ProductionRecord objects named productionRun.
-//        Send the productionRun to an addToProductionDB method. (Tip: use a TimeStamp object for the date)
-
-//    call loadProductionLog
-//    call showProduction
-
-//    From the initialize method call the loadProductionLog method which should:
 
     productionRun.clear();
 
@@ -400,7 +397,6 @@ public class Controller {
     for (Product selectedProduct : selectedProducts) {
 
       // Create and Add ProductionRecord objects from database ResultSet to the pLogTextArea
-
       for (int productCount = 0; productCount < quantity; productCount++) {
         ProductionRecord currentRecord = new ProductionRecord(selectedProduct,
             ProductionRecord.getCurrentProdNum(), new Timestamp(System.currentTimeMillis()));
@@ -413,18 +409,22 @@ public class Controller {
   }
 
   /**
-   *
+   * Loads the productionLog ArrayList from the database and processes the productionNumber
+   * productID, serialNumber, and date for each row in the PRODUCTIONRECORD table.
    */
-  public void loadProductionLog() {
+  private void loadProductionLog() throws IOException {
 
-
-//    Create ProductionRecord objects from the records in the ProductionRecord database table.
-
-    String sql = "SELECT PRODUCTION_NUM, PRODUCT_ID, SERIAL_NUM, DATE_PRODUCED FROM PRODUCTIONRECORD";
+    String sql = "SELECT PRODUCTION_NUM, PRODUCT_ID, SERIAL_NUM, DATE_PRODUCED "
+        + "FROM PRODUCTIONRECORD";
+    FileInputStream stream = null;
     try {
       Properties prop = new Properties();
-      prop.load(new FileInputStream("res/properties"));
-      PASS = prop.getProperty("password");
+      stream = new FileInputStream("res/properties");
+      prop.load(stream);
+      stream.close();
+
+      PASS = reverseString(prop.getProperty("password"));
+
       conn = DriverManager.getConnection(DB_URL, USER, PASS);
       stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery(sql);
@@ -436,27 +436,26 @@ public class Controller {
         String serialNum = rs.getString(3);
         Date prodDate = new Date(rs.getTimestamp(4).getTime());
 
-        ProductionRecord currentRecord = new ProductionRecord(productLine.get(prodID - 1), prodNum,
+        ProductionRecord currentRecord = new ProductionRecord(productLine.get(prodID - 1),
+            prodNum,
             serialNum, prodDate);
 
-        //    Populate the productionLog ArrayList
         productionLog.add(currentRecord);
       }
       rs.close();
 
     } catch (FileNotFoundException ex) {
       ex.printStackTrace();
-    } catch (IOException ex) {
-      ex.printStackTrace();
     } catch (SQLException ex) {
       ex.printStackTrace();
     }
-//    call showProduction
     showProductionLog();
+
   }
 
   /**
-   *
+   * Appends the production record information from the toString() method for each ProductionRecord
+   * object within the productionRun list.
    */
   public void showProductionRun() {
 //    populate the TextArea on the Production Log tab with the information from the productionRun,
@@ -469,7 +468,8 @@ public class Controller {
   }
 
   /**
-   *
+   * Appends the production record information from the toString() method for each ProductionRecord
+   * object within the productionLog list.
    */
   public void showProductionLog() {
 //    populate the TextArea on the Production Log tab with the information from the productionRun,
@@ -482,13 +482,11 @@ public class Controller {
   }
 
   /**
-   *
+   * Adds a row to the ProductionRecord table for each ProductionRecord object in the productionRun
+   * list.
    */
   public void addToProductionDB() {
 
-//    The addToProductionDB method should:
-//
-//    Loop through the productionRun, inserting productionRecord object information into the ProductionRecord database table.
     for (ProductionRecord record : productionRun) {
 
       String addRecordString =
@@ -511,6 +509,47 @@ public class Controller {
 
         ex.printStackTrace();
       }
+    }
+  }
+
+  /**
+   * The reverseString method reverses strings.
+   *
+   * @param id - string to be reversed.
+   */
+  public String reverseString(String id) {
+    // Paste the code for your reverseString method here.
+
+    int strLen = id.length();
+
+    //Base case returns the last letter, the only letter if id is 1 character at start
+    if (strLen == 1) {
+      return id;
+    } else {
+      String shortStr = id.substring(0, strLen - 1);
+      //Recursive case returns the last character of the String
+      // first and concatenates the result of the next call
+      return id.charAt(strLen - 1) + reverseString(shortStr);
+    }
+  }
+
+  /**
+   * Takes the full name from the nameField and the pw from the pwField and if both have strings,
+   * then an Employee object is created with the entered name and pw. The employee information is
+   * set to the employeeTA text area.
+   */
+  @FXML
+  public void createAccount() {
+    String name = nameField.getText();
+    String pw = pwField.getText();
+    if (!name.isEmpty() && !pw.isEmpty()) {
+      Employee newEmployee = new Employee(nameField.getText(), pwField.getText());
+      employeeTA.setText(newEmployee.toString());
+    } else {
+      returnMsg.setText(
+          "Please enter a full name separated by a space and a password with an uppercase,\n"
+              + "lowercase, and special character.");
+      returnMsg.setVisible(true);
     }
   }
 }

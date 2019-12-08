@@ -3,6 +3,8 @@ package com.nolz3003;
 /**
  * Every MoviePlayer has a Screen object, which contains details about the screen and implements the
  * ScreenSpec interface.
+ *
+ * @author Austin Nolz
  */
 public class Screen implements ScreenSpec {
 

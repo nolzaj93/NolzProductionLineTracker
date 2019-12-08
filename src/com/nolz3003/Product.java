@@ -1,12 +1,11 @@
 package com.nolz3003;
 
 /**
- * The Product class.
+ * The Product class is a model for a Product object in the Product Line.
  *
- * @author Austin Nolz - The Product class holds the data for each product added to the
- *      Existing Product table.
+ * @author austinnolz - The Product Class is a used to build a general Product object with a
+ * productID, product Name, manufacturer, and item type code.
  */
-@SuppressWarnings("unused")
 public abstract class Product implements Item {
 
   private String productName = "";
@@ -14,17 +13,15 @@ public abstract class Product implements Item {
   private String itemTypeCode = "";
   private ItemType itemType;
 
-
-
   private int productID;
 
-
   public Product() {
-    this(0,"", "", ItemType.AUDIO);
+    this(0, "", "", ItemType.AUDIO);
   }
 
   /**
-   * Constructor for the Product class.
+   * Constructor for the Product class which sets the productID, productName, manufacturer, and item
+   * type.
    *
    * @param productID - productID number
    * @param productName - product name
@@ -50,22 +47,18 @@ public abstract class Product implements Item {
   public String toString() {
     return "Name: " + productName + "\n"
         + "Manufacturer: " + manufacturer + "\n"
-        + "Item Type: "+ itemType.name() + "\n";
+        + "Item Type: " + itemType.name() + "\n";
   }
 
-  public int getProductID() {
+  int getProductID() {
     return productID;
   }
 
-  public void setProductID(int productID) {
+  private void setProductID(int productID) {
     this.productID = productID;
   }
 
-  public ItemType getItemType() {
-    return itemType;
-  }
-
-  public void setItemType(ItemType itemType) {
+  void setItemType(ItemType itemType) {
     this.itemType = itemType;
   }
 
@@ -94,8 +87,7 @@ public abstract class Product implements Item {
     return itemTypeCode;
   }
 
-
-  public void setItemTypeCode(String itemTypeCode) {
+  private void setItemTypeCode(String itemTypeCode) {
     this.itemTypeCode = itemTypeCode;
   }
 

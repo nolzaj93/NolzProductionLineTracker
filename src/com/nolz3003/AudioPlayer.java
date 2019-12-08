@@ -4,7 +4,7 @@ package com.nolz3003;
  * The AudioPlayer class.
  *
  * @author austinnolz - The AudioPlayer class is a type of Product class and implements the
- *      MultimediaControl interface. This is the data model for AudioPlayer objects.
+ * MultimediaControl interface. This is the data model for AudioPlayer objects.
  */
 public class AudioPlayer extends Product implements MultimediaControl {
 

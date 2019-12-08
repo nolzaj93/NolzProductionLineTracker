@@ -2,6 +2,8 @@ package com.nolz3003;
 
 /**
  * The ItemType enum contains a full string for each item type and a respective item type code.
+ *
+ * @author austinnolz
  */
 public enum ItemType {
 

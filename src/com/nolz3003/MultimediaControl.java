@@ -3,8 +3,8 @@ package com.nolz3003;
 /**
  * MultimediaControl interface.
  *
- * @author austinnolz - The MultimediaControl interface is implemented by the AudioPlayer
- *     and MoviePlayer classes.
+ * @author austinnolz - The MultimediaControl interface is implemented by the AudioPlayer and
+ * MoviePlayer classes.
  */
 public interface MultimediaControl {
 

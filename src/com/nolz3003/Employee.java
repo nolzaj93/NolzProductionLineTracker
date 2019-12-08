@@ -1,12 +1,18 @@
 package com.nolz3003;
 
 /**
- * Employee class.
+ * The Employee class is a model for a new employee.
  *
  * @author austinnolz - The model class for an employee, which details employee data and methods.
  */
 public class Employee {
 
+  /**
+   * An Employee constructor accepting a full name and password.
+   *
+   * @param name - Employee full name
+   * @param pw - password
+   */
   public Employee(String name, String pw) {
 
     if (name.matches("[a-zA-Z]+\\s[a-zA-Z]+")) {
@@ -48,31 +54,37 @@ public class Employee {
     this.name = name;
   }
 
-  public String getUsername() {
+  private String getUsername() {
     return username;
   }
 
-  public void setUsername() {
+  private void setUsername() {
     this.username = firstName.charAt(0) + lastName;
   }
 
-  public String getEmail() {
+  private String getEmail() {
     return email;
   }
 
-  public void setEmail() {
+  private void setEmail() {
     this.email = firstName + "." + lastName + "@oracleacademy.Test";
   }
 
-  public String getPassword() {
+  private String getPassword() {
     return password;
   }
 
-  public void setPassword(String password) {
+  private void setPassword(String password) {
     this.password = password;
   }
 
-  public void isValidPassword(String pw) {
+  /**
+   * The isValidPassword method only sets the password if it fits the regex patterns: uppercase
+   * letter, lowercase letter, and special character.
+   *
+   * @param pw - password to be checked.
+   */
+  private void isValidPassword(String pw) {
     if (pw.matches(".*[A-Z].*") && pw.matches(".*[a-z].*") && !pw.matches("[a-zA-Z0-9]*")) {
       setPassword(pw);
     } else {
