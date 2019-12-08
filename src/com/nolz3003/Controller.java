@@ -181,13 +181,13 @@ public class Controller {
   /**
    * This method makes an attempt to connect to the H2 local database.
    */
-  private void initializeDB() throws IOException {
+  private void initializeDB() {
     // intelliJ must be disconnected from the database in order for program to connect
     // Hit the red square to stop intelliJ connection to database before running the program
     // Right click on database, Diagrams, Open Visualization
     // Need a database diagram for the Production Line Project
 
-    FileInputStream stream = null;
+    FileInputStream stream;
     try {
       Properties prop = new Properties();
       stream = new FileInputStream("res/properties");
