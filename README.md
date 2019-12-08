@@ -3,7 +3,7 @@ OOP Project completed at FGCU Fall 2019
 
 
 ## Demonstration
-
+![](NolzOOPDemo.gif)
 
 ## Documentation
 - Javadocs Link:
