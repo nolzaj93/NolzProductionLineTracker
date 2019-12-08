@@ -545,6 +545,8 @@ public class Controller {
     String name = nameField.getText();
     String pw = pwField.getText();
     if (!name.isEmpty() && !pw.isEmpty()) {
+
+      returnMsg.setVisible(false);
       Employee newEmployee = new Employee(nameField.getText(), pwField.getText());
       employeeTA.setText(newEmployee.toString());
     } else {

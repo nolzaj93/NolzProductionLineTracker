@@ -6,14 +6,18 @@ OOP Project completed at FGCU Fall 2019
 
 
 ## Documentation
-
+- Javadocs Link:
+- https://nolzaj93.github.io/NolzProductionLineTracker/
 
 ## Diagrams
 
 ![](OOPClassDiagram.jpg)
 
+![](DBTables.jpg)
+
 ## Getting Started
-- 
+- Download the .jar file named NolzOOPProductionLineTracker.jar and run from the command line, or 
+press the green "Clone or download" button to copy the whole project, then open in IntelliJ.
 
 ## Built With
 
