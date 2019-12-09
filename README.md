@@ -27,11 +27,6 @@ press the green "Clone or download" button to copy the whole project, then open 
 - IntelliJ
 - H2 Local Database
 
-## Contributing
-- Professor Scott Vanselow
-- Github
-- StackOverflow
-
 ## Author
 
 - Austin Nolz
